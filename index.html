@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Buster - English Action Game</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/ui.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="game-shell">
+      <!-- Top HUD (visible during gameplay) -->
+      <header id="hud" class="hud hidden" aria-label="Game HUD">
+        <div class="hud-group">
+          <div id="hud-hearts" class="hud-hearts" title="Life"></div>
+          <div class="hud-item hud-lives" title="Lives">
+            <canvas id="hud-player-icon" width="24" height="24"></canvas>
+            <span>× ∞</span>
+          </div>
+        </div>
+
+        <div class="hud-group">
+          <div class="hud-item hud-coins" title="Coins">
+            <span class="coin-dot"></span>
+            <span id="hud-coins">0</span>
+          </div>
+          <div class="hud-item hud-score" title="Score">
+            <span class="hud-label">SCORE</span>
+            <span id="hud-score">00000</span>
+            <span class="hud-divider">/</span>
+            <span class="hud-label">HI</span>
+            <span id="hud-high">00000</span>
+          </div>
+          <div class="hud-item hud-timer" title="Elapsed Time">
+            <span class="timer-icon">⏱</span>
+            <span id="hud-timer">00:00</span>
+          </div>
+          <button id="btn-settings" class="icon-btn" type="button" title="Settings / Pause (Esc or P)" aria-label="Settings">
+            ⚙
+          </button>
+        </div>
+      </header>
+
+      <!-- Mission Banner directly under HUD -->
+      <section id="mission-banner" class="mission-banner hidden" aria-live="polite">
+        <div class="buddy-badge">
+          <canvas id="banner-buddy-icon" width="44" height="44"></canvas>
+          <span class="buddy-name">Buddy</span>
+        </div>
+        <div class="mission-content">
+          <div class="mission-top-row">
+            <span id="mission-text" class="mission-text">Get 3 coins!</span>
+            <span id="mission-progress" class="mission-progress"></span>
+          </div>
+          <div id="mission-jp" class="mission-jp hidden"></div>
+          <div id="mission-timer-wrap" class="mission-timer-wrap hidden">
+            <div class="mission-timer-track">
+              <div id="mission-timer-bar" class="mission-timer-bar"></div>
+            </div>
+            <span id="mission-timer-sec" class="mission-timer-sec">25s</span>
+          </div>
+        </div>
+        <div class="mission-actions">
+          <button id="btn-replay-voice" class="banner-btn" type="button" title="Listen again (R)">
+            🔊 <span>R</span>
+          </button>
+          <button id="btn-hint" class="banner-btn hint-btn" type="button" title="Japanese Hint (H)">
+            💡 <span>H</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Game Canvas -->
+      <div class="canvas-stage">
+        <canvas id="game-canvas" width="1440" height="810"></canvas>
+
+        <!-- Title & Character Select Overlay -->
+        <div id="screen-title" class="overlay-screen">
+          <div class="panel title-panel">
+            <div class="title-badge">ENGLISH ACTION ADVENTURE</div>
+            <h1 class="game-title">WORD BUSTER</h1>
+            <p class="game-subtitle">Listen to Buddy, read the English, and blast through the stage!</p>
+
+            <div class="char-select-section">
+              <div class="section-label">SELECT YOUR HERO</div>
+              <div class="char-cards">
+                <button class="char-card selected" data-char="boy" type="button">
+                  <canvas id="preview-boy" width="84" height="96"></canvas>
+                  <span class="char-name">Boy</span>
+                </button>
+                <button class="char-card" data-char="girl" type="button">
+                  <canvas id="preview-girl" width="84" height="96"></canvas>
+                  <span class="char-name">Girl</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="title-actions">
+              <button id="btn-go-stages" class="primary-btn" type="button">START GAME</button>
+            </div>
+
+            <div class="controls-strip">
+              <span><kbd>←</kbd><kbd>→</kbd> Move</span>
+              <span><kbd>Space</kbd> Jump</span>
+              <span><kbd>Z</kbd> Shoot / Hold: Charge</span>
+              <span><kbd>R</kbd> Replay Voice</span>
+              <span><kbd>H</kbd> Hint</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- World & Stage Select Overlay -->
+        <div id="screen-stages" class="overlay-screen hidden">
+          <div class="panel stages-panel">
+            <div class="stages-header">
+              <div>
+                <h2 class="panel-title">STAGE SELECT</h2>
+                <p class="panel-sub">Clear each stage to unlock the next!</p>
+              </div>
+              <button id="btn-back-title" class="secondary-btn" type="button">← Title</button>
+            </div>
+            <div id="worlds-grid" class="worlds-grid"></div>
+          </div>
+        </div>
+
+        <!-- Pause / Settings Modal -->
+        <div id="modal-settings" class="overlay-screen hidden">
+          <div class="panel modal-panel">
+            <h2 class="panel-title">PAUSED / SETTINGS</h2>
+            <div class="settings-list">
+              <div class="setting-row">
+                <span class="setting-label">Voice Speed</span>
+                <div class="toggle-group">
+                  <button id="btn-speed-slow" class="toggle-btn" type="button">Slow</button>
+                  <button id="btn-speed-normal" class="toggle-btn active" type="button">Normal</button>
+                </div>
+              </div>
+              <div class="setting-row">
+                <span class="setting-label">English Voice</span>
+                <div class="toggle-group">
+                  <button id="btn-voice-on" class="toggle-btn active" type="button">ON</button>
+                  <button id="btn-voice-off" class="toggle-btn" type="button">OFF</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-controls-hint">
+              <kbd>←</kbd><kbd>→</kbd> / <kbd>A</kbd><kbd>D</kbd> Move ·
+              <kbd>Space</kbd> / <kbd>↑</kbd> Jump ·
+              <kbd>Z</kbd> Shoot &amp; Charge ·
+              <kbd>R</kbd> Voice · <kbd>H</kbd> Hint
+            </div>
+
+            <div class="modal-actions">
+              <button id="btn-resume" class="primary-btn" type="button">Resume</button>
+              <button id="btn-restart" class="secondary-btn" type="button">Restart</button>
+              <button id="btn-to-stages" class="secondary-btn" type="button">Stage Select</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage Clear Overlay -->
+        <div id="screen-clear" class="overlay-screen hidden">
+          <div class="panel clear-panel">
+            <div class="clear-buddy">
+              <canvas id="clear-buddy-icon" width="64" height="64"></canvas>
+              <div id="clear-praise" class="clear-praise">Awesome!</div>
+            </div>
+            <h2 id="clear-title" class="panel-title">STAGE CLEAR!</h2>
+            <div class="clear-stats">
+              <div class="stat-box">
+                <span class="stat-label">SCORE</span>
+                <span id="clear-score" class="stat-val">0</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">HIGH SCORE</span>
+                <span id="clear-high" class="stat-val">0</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">TIME</span>
+                <span id="clear-time" class="stat-val">00:00</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">COINS</span>
+                <span id="clear-coins" class="stat-val">0</span>
+              </div>
+            </div>
+            <div id="clear-unlock-msg" class="unlock-msg hidden"></div>
+            <div class="modal-actions">
+              <button id="btn-next-stage" class="primary-btn" type="button">Next Stage →</button>
+              <button id="btn-replay-stage" class="secondary-btn" type="button">Play Again</button>
+              <button id="btn-clear-stages" class="secondary-btn" type="button">Stage Select</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
