@@ -711,7 +711,52 @@ const BOSS_BIRD_1 = [
   '................',
 ];
 
+const BOSS_CANDY_0 = [
+  '.....Y.YY.Y.....',
+  '.....YYYYYY.....',
+  '....WWWWWWWW....',
+  '...WWPPPPPPWW...',
+  '..WWPPPPPPPPWW..',
+  '..WPPWEYYEWPPW..',
+  '..WPPWEEEEWPPW..',
+  '..WPPPPPPPPPPW..',
+  '.WWWWWWWWWWWWWW.',
+  '.WCCCCCCCCCCCCW.',
+  '.WCCYYCCCCYYCCW.',
+  '..CCCCCCCCCCCC..',
+  '...PPP....PPP...',
+  '..DDDD....DDDD..',
+];
+
+const BOSS_CANDY_1 = [
+  '....Y..YY..Y....',
+  '.....YYYYYY.....',
+  '....WWWWWWWW....',
+  '...WWPPPPPPWW...',
+  '..WWPPPPPPPPWW..',
+  '..WPPWEYYEWPPW..',
+  '..WPPWEEEEWPPW..',
+  '..WPPPPPPPPPPW..',
+  '.WWWWWWWWWWWWWW.',
+  'WWCCCCCCCCCCCCWW',
+  '.WCCYYCCCCYYCCW.',
+  '..CCCCCCCCCCCC..',
+  '..PPP......PPP..',
+  '.DDDD......DDDD.',
+];
+
 export function getBossSprite(bossId, frame = 0, flipX = false, scale = 6) {
+  if (bossId === 'candy_king') {
+    const palette = {
+      Y: '#ffd24c',
+      W: '#ffffff',
+      P: '#ff5d9e',
+      C: '#c98a52',
+      D: '#8a4f24',
+      E: '#1a1f36',
+    };
+    return getSprite(`boss_candy_${frame % 2}`, frame % 2 === 0 ? BOSS_CANDY_0 : BOSS_CANDY_1, palette, scale, flipX);
+  }
   if (bossId === 'giant_octopus') {
     const palette = {
       P: '#9b5de5',

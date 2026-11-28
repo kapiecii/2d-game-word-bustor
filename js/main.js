@@ -12,7 +12,8 @@ const speech = new SpeechManager(storage.getSettings());
 const input = new InputManager();
 
 let currentStageId = null;
-let screenState = 'title'; // 'title' | 'stages' | 'shop' | 'play' | 'pause' | 'clear'
+let screenState = 'title'; // 'title' | 'stages' | 'shop' | 'save' | 'play' | 'pause' | 'clear'
+let previousScreenBeforeSave = 'title';
 
 const hud = new HudController({
   onSelectChar(char) {
@@ -31,6 +32,67 @@ const hud = new HudController({
     screenState = 'shop';
     hud.renderShop(storage);
     hud.showScreen('shop');
+  },
+  onOpenSaveModal() {
+    previousScreenBeforeSave = screenState === 'stages' ? 'stages' : 'title';
+    screenState = 'save';
+    hud.openSaveModal();
+  },
+  onCloseSaveModal() {
+    screenState = previousScreenBeforeSave;
+    if (screenState === 'stages') {
+      hud.renderWorldSelect(WORLDS, storage);
+    }
+    hud.showScreen(screenState);
+  },
+  onExportFile() {
+    const json = storage.exportData();
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `word-buster-save-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    hud.showSaveStatus('Save file downloaded!', true);
+  },
+  async onExportCopy() {
+    const json = storage.exportData();
+    try {
+      await navigator.clipboard.writeText(json);
+      hud.showSaveStatus('Save JSON copied to clipboard!', true);
+    } catch {
+      hud.textareaImportJson.value = json;
+      hud.textareaImportJson.select();
+      hud.showSaveStatus('Clipboard blocked — JSON shown in box below. Copy it manually!', true);
+    }
+  },
+  onImportText(rawText) {
+    if (!rawText || !rawText.trim()) {
+      hud.showSaveStatus('Please choose a file or paste JSON first.', false);
+      return;
+    }
+    const res = storage.importData(rawText);
+    if (!res.ok) {
+      hud.showSaveStatus(res.error || 'Invalid save data.', false);
+      return;
+    }
+    // Sync restored character, equipment, settings, and stage unlocks immediately
+    const settings = storage.getSettings();
+    speech.setEnabled(settings.voiceEnabled);
+    speech.setSpeed(settings.voiceSpeed);
+    hud.syncSettingsUI(settings);
+    hud.selectCharCard(storage.getCharacter(), storage.getEquipped());
+    hud.renderWorldSelect(WORLDS, storage);
+    audio.missionSuccess();
+    hud.showSaveStatus(
+      `Save restored! (${storage.data.unlockedStages.length} stages unlocked, ${storage.getTotalCoins()} coins)`,
+      true
+    );
   },
   onShopTabChange() {
     hud.renderShop(storage);

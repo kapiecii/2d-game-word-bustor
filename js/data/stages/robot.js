@@ -141,9 +141,75 @@ export const ROBOT_STAGES = {
     ],
   },
 
+  'robot-2b': {
+    id: 'robot-2b',
+    name: 'Robot 3: Cyber Vault',
+    world: 'robot',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Stop the laser!
+      { id: 'r2b_sw_l', type: 'switch', color: 'green', label: 'LASER SWITCH', controlsLaserId: 'r2b_laser', x: 460, y: G - 120, w: 40, h: 40 },
+      { id: 'r2b_laser', type: 'laser', active: true, x: 700, y: G - 160, w: 22, h: 160 },
+
+      // Area 2: Get the red star!
+      { id: 'r2b_sr', type: 'star', color: 'red', x: 1000, y: G - 115, w: 30, h: 30 },
+      { id: 'r2b_sb', type: 'star', color: 'blue', x: 1180, y: G - 48, w: 30, h: 30 },
+      { id: 'r2b_sy', type: 'star', color: 'yellow', x: 1360, y: G - 48, w: 30, h: 30 },
+      { id: 'r2b_gate2', type: 'gate', x: 1580, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Shoot 2 robots!
+      { id: 'r2b_box', type: 'box', x: 1780, y: G - 48, w: 48, h: 48 },
+      { id: 'r2b_gate3', type: 'gate', x: 2440, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'r2b_c1', type: 'coin', x: 2640, y: G - 68, w: 24, h: 24 },
+      { id: 'r2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 'r2b_rob1', type: 'robot', word: 'Robot', x: 2020, y: G - 24, patrolRange: 80, hp: 2 },
+      { id: 'r2b_rob2', type: 'robot', word: 'Robot', x: 2260, y: G - 24, patrolRange: 80, hp: 2 },
+    ],
+    missions: [
+      {
+        id: 'mr2b_laser',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'shoot_switch',
+        targetId: 'r2b_sw_l',
+        text: 'Stop the laser!',
+        jp: 'スイッチを撃ってレーザーを止めよう！',
+        timeLimit: 25,
+      },
+      {
+        id: 'mr2b_charge',
+        triggerX: 770,
+        checkpointX: 790,
+        type: 'use_charge_shot',
+        targetCount: 1,
+        text: 'Use a big shot!',
+        jp: 'Zキーを長押ししてチャージショット（BIG SHOT）を撃とう！',
+        timeLimit: 25,
+        gateId: 'r2b_gate2',
+      },
+      {
+        id: 'mr2b_robots',
+        triggerX: 1630,
+        checkpointX: 1650,
+        type: 'defeat_enemy_type',
+        targetType: 'robot',
+        targetCount: 2,
+        text: 'Shoot 2 robots!',
+        jp: 'ロボットを2たい倒そう！',
+        timeLimit: 30,
+        gateId: 'r2b_gate3',
+      },
+    ],
+  },
+
   'robot-3': {
     id: 'robot-3',
-    name: 'Robot 3: Mega Robot',
+    name: 'Robot 4: Mega Robot',
     world: 'robot',
     width: 2200,
     startX: 60,

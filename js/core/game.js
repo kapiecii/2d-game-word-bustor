@@ -244,6 +244,7 @@ export class Game {
       const by = this.player.y + (hyper ? 12 : 14);
       this.bullets.push(new Bullet(bx, by, vx, 0, true, true, hyper));
       this.audio.chargeShot();
+      this.missionManager.onPlayerShoot(true);
       return true;
     }
 
@@ -356,6 +357,26 @@ export class Game {
             // Reset any partially activated switches in sequence
             this.objects.forEach((o) => {
               if (o.type === 'switch' && o.resetOnFail) o.activated = false;
+            });
+          }
+        } else if (obj.type === 'shape_target' && !obj.activated && rectsOverlap(b, obj)) {
+          b.alive = false;
+          const ok = this.missionManager.onShapeHit(obj);
+          if (ok) {
+            this.audio.gateOpen();
+            this.spawnFloatingText(`${obj.shape.toUpperCase()}!`, obj.x + obj.w / 2, obj.y - 10, '#45f28f');
+            this.spawnBurst(obj.x + obj.w / 2, obj.y + obj.h / 2, '#45f28f', 10);
+          }
+        } else if (obj.type === 'number_target' && !obj.activated && rectsOverlap(b, obj)) {
+          b.alive = false;
+          const ok = this.missionManager.onNumberHit(obj);
+          if (ok) {
+            this.audio.gateOpen();
+            this.spawnFloatingText(`${obj.num}!`, obj.x + obj.w / 2, obj.y - 10, '#ffd24c');
+            this.spawnBurst(obj.x + obj.w / 2, obj.y + obj.h / 2, '#ffd24c', 10);
+          } else {
+            this.objects.forEach((o) => {
+              if (o.type === 'number_target' && o.resetOnFail) o.activated = false;
             });
           }
         } else if ((obj.type === 'box' || obj.type === 'gate' || (obj.type === 'laser' && obj.active !== false)) && rectsOverlap(b, obj)) {

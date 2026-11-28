@@ -153,9 +153,79 @@ export const DESERT_STAGES = {
     ],
   },
 
+  'desert-2b': {
+    id: 'desert-2b',
+    name: 'Desert 3: Pyramid Path',
+    world: 'desert',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Shoot the big slime!
+      { id: 'd2b_c1', type: 'coin', x: 260, y: G - 56, w: 24, h: 24 },
+      { id: 'd2b_gate1', type: 'gate', x: 880, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Jump over the cactus!
+      { id: 'd2b_cactus1', type: 'cactus', x: 1180, y: G - 62, w: 42, h: 62 },
+      { id: 'd2b_c2', type: 'coin', x: 1190, y: G - 136, w: 24, h: 24 },
+      { id: 'd2b_gate2', type: 'gate', x: 1500, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Shoot 1, 2, 3! (Ordered numbers)
+      { id: 'd2b_n1', type: 'number_target', num: 1, resetOnFail: true, x: 1820, y: G - 62, w: 42, h: 42 },
+      { id: 'd2b_n2', type: 'number_target', num: 2, resetOnFail: true, x: 1980, y: G - 122, w: 42, h: 42 },
+      { id: 'd2b_n3', type: 'number_target', num: 3, resetOnFail: true, x: 2140, y: G - 62, w: 42, h: 42 },
+      { id: 'd2b_gate3', type: 'gate', x: 2360, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'd2b_c3', type: 'coin', x: 2600, y: G - 64, w: 24, h: 24 },
+      { id: 'd2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 'd2b_small', type: 'blue_slime', word: 'Small Slime', sizeTag: 'small', scale: 0.72, x: 460, y: G - 24, patrolRange: 65, hp: 1 },
+      { id: 'd2b_big', type: 'red_slime', word: 'Big Slime', sizeTag: 'big', scale: 1.75, x: 680, y: G - 24, patrolRange: 70, hp: 3 },
+    ],
+    missions: [
+      {
+        id: 'md2b_big',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'defeat_enemy_type',
+        targetId: 'd2b_big',
+        forbiddenIds: ['d2b_small'],
+        targetCount: 1,
+        text: 'Shoot the big slime!',
+        jp: '大きいスライムを撃とう！（小さい方は撃たないで）',
+        timeLimit: 30,
+        gateId: 'd2b_gate1',
+      },
+      {
+        id: 'md2b_cactus',
+        triggerX: 930,
+        checkpointX: 950,
+        type: 'jump_over_object',
+        targetId: 'd2b_cactus1',
+        text: 'Jump over the cactus!',
+        jp: 'サボテンを飛びこえよう！',
+        timeLimit: 25,
+        gateId: 'd2b_gate2',
+      },
+      {
+        id: 'md2b_nums',
+        triggerX: 1550,
+        checkpointX: 1570,
+        type: 'sequence',
+        subType: 'shoot_numbers',
+        steps: [1, 2, 3],
+        text: 'Shoot 1, 2, 3!',
+        jp: '1、2、3の順番に的を撃とう！',
+        timeLimit: 30,
+        gateId: 'd2b_gate3',
+      },
+    ],
+  },
+
   'desert-3': {
     id: 'desert-3',
-    name: 'Desert 3: Rock Golem',
+    name: 'Desert 4: Rock Golem',
     world: 'desert',
     width: 2200,
     startX: 60,

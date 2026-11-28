@@ -141,9 +141,72 @@ export const SKY_STAGES = {
     ],
   },
 
+  'sky-2b': {
+    id: 'sky-2b',
+    name: 'Sky 3: Rainbow Gate',
+    world: 'sky',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Don't move!
+      { id: 'k2b_c1', type: 'coin', x: 240, y: G - 56, w: 24, h: 24 },
+      { id: 'k2b_gate1', type: 'gate', x: 640, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Shoot the circle! (Square / Circle / Triangle)
+      { id: 'k2b_sh_s', type: 'shape_target', shape: 'square', color: 'red', x: 960, y: G - 62, w: 46, h: 46 },
+      { id: 'k2b_sh_c', type: 'shape_target', shape: 'circle', color: 'green', x: 1120, y: G - 126, w: 46, h: 46 },
+      { id: 'k2b_sh_t', type: 'shape_target', shape: 'triangle', color: 'yellow', x: 1280, y: G - 62, w: 46, h: 46 },
+      { id: 'k2b_gate2', type: 'gate', x: 1520, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Break the ice!
+      { id: 'k2b_ice', type: 'ice', x: 1960, y: G - 78, w: 66, h: 78, broken: false },
+      { id: 'k2b_gate3', type: 'gate', x: 2320, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'k2b_c2', type: 'coin', x: 2560, y: G - 76, w: 24, h: 24 },
+      { id: 'k2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [],
+    missions: [
+      {
+        id: 'mk2b_freeze',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'dont_move',
+        holdSeconds: 3,
+        text: "Don't move!",
+        jp: '3びょう間じっと止まろう！',
+        timeLimit: 20,
+        gateId: 'k2b_gate1',
+      },
+      {
+        id: 'mk2b_circle',
+        triggerX: 690,
+        checkpointX: 710,
+        type: 'shoot_shape',
+        targetShape: 'circle',
+        text: 'Shoot the circle!',
+        jp: '丸（CIRCLE）の的を撃とう！',
+        timeLimit: 25,
+        gateId: 'k2b_gate2',
+      },
+      {
+        id: 'mk2b_ice',
+        triggerX: 1570,
+        checkpointX: 1590,
+        type: 'break_object',
+        targetId: 'k2b_ice',
+        text: 'Break the ice!',
+        jp: 'チャージショットで氷（ICE）をこわそう！',
+        timeLimit: 30,
+        gateId: 'k2b_gate3',
+      },
+    ],
+  },
+
   'sky-3': {
     id: 'sky-3',
-    name: 'Sky 3: Thunder Bird',
+    name: 'Sky 4: Thunder Bird',
     world: 'sky',
     width: 2200,
     startX: 60,

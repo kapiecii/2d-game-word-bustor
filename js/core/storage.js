@@ -27,24 +27,104 @@ export class StorageManager {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return structuredClone(DEFAULT_SAVE);
-      const parsed = JSON.parse(raw);
-      return {
-        ...structuredClone(DEFAULT_SAVE),
-        ...parsed,
-        ownedItems: Array.from(
-          new Set([...DEFAULT_SAVE.ownedItems, ...(parsed.ownedItems || [])])
-        ),
-        equipped: {
-          ...DEFAULT_SAVE.equipped,
-          ...(parsed.equipped || {}),
-        },
-        settings: {
-          ...DEFAULT_SAVE.settings,
-          ...(parsed.settings || {}),
-        },
-      };
+      return this.normalizeData(JSON.parse(raw));
     } catch {
       return structuredClone(DEFAULT_SAVE);
+    }
+  }
+
+  normalizeData(parsed) {
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('Invalid save object');
+    }
+    const unlocked = new Set(
+      Array.isArray(parsed.unlockedStages)
+        ? parsed.unlockedStages.filter((s) => typeof s === 'string')
+        : DEFAULT_SAVE.unlockedStages
+    );
+    unlocked.add('forest-1');
+    // Backward compatibility: if a player already unlocked <world>-3, also unlock newly inserted <world>-2b
+    ['forest', 'desert', 'snow', 'robot', 'ocean', 'volcano', 'sky'].forEach((w) => {
+      if (unlocked.has(`${w}-3`)) {
+        unlocked.add(`${w}-2b`);
+      }
+    });
+
+    const cleared = Array.isArray(parsed.clearedStages)
+      ? Array.from(new Set(parsed.clearedStages.filter((s) => typeof s === 'string')))
+      : [];
+
+    const highScores = {};
+    if (parsed.highScores && typeof parsed.highScores === 'object' && !Array.isArray(parsed.highScores)) {
+      for (const [k, v] of Object.entries(parsed.highScores)) {
+        if (typeof v === 'number' && Number.isFinite(v) && v >= 0) {
+          highScores[k] = Math.floor(v);
+        }
+      }
+    }
+
+    const totalCoins =
+      typeof parsed.totalCoins === 'number' && Number.isFinite(parsed.totalCoins) && parsed.totalCoins >= 0
+        ? Math.floor(parsed.totalCoins)
+        : 0;
+
+    const ownedItems = Array.from(
+      new Set([
+        ...DEFAULT_SAVE.ownedItems,
+        ...(Array.isArray(parsed.ownedItems)
+          ? parsed.ownedItems.filter((s) => typeof s === 'string')
+          : []),
+      ])
+    );
+
+    const rawEq = parsed.equipped && typeof parsed.equipped === 'object' ? parsed.equipped : {};
+    const equipped = {
+      weapon: ownedItems.includes(rawEq.weapon) ? rawEq.weapon : DEFAULT_SAVE.equipped.weapon,
+      suit: ownedItems.includes(rawEq.suit) ? rawEq.suit : DEFAULT_SAVE.equipped.suit,
+      accessory: ownedItems.includes(rawEq.accessory) ? rawEq.accessory : DEFAULT_SAVE.equipped.accessory,
+    };
+
+    const rawSet = parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : {};
+    const settings = {
+      voiceEnabled: typeof rawSet.voiceEnabled === 'boolean' ? rawSet.voiceEnabled : DEFAULT_SAVE.settings.voiceEnabled,
+      voiceSpeed: rawSet.voiceSpeed === 'slow' ? 'slow' : 'normal',
+    };
+
+    return {
+      character: parsed.character === 'girl' ? 'girl' : 'boy',
+      unlockedStages: Array.from(unlocked),
+      clearedStages: cleared,
+      highScores,
+      totalCoins,
+      ownedItems,
+      equipped,
+      settings,
+    };
+  }
+
+  exportData() {
+    const payload = {
+      format: 'word-buster-save',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: this.data,
+    };
+    return JSON.stringify(payload, null, 2);
+  }
+
+  importData(rawText) {
+    try {
+      const parsed = JSON.parse(rawText);
+      const source =
+        parsed && parsed.format === 'word-buster-save' && parsed.data
+          ? parsed.data
+          : parsed;
+      const normalized = this.normalizeData(source);
+      this.data = normalized;
+      this.save();
+      return { ok: true };
+    } catch {
+      return { ok: false, error: 'Invalid save data format.' };
     }
   }
 

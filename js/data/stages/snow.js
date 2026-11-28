@@ -144,9 +144,76 @@ export const SNOW_STAGES = {
     ],
   },
 
+  'snow-2b': {
+    id: 'snow-2b',
+    name: 'Snow 3: Frozen Peak',
+    world: 'snow',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Jump on the right box!
+      { id: 's2b_bl', type: 'box', label: 'LEFT BOX', x: 300, y: G - 54, w: 54, h: 54 },
+      { id: 's2b_br', type: 'box', label: 'RIGHT BOX', x: 520, y: G - 54, w: 54, h: 54 },
+      { id: 's2b_gate1', type: 'gate', x: 780, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Break the ice!
+      { id: 's2b_ice1', type: 'ice', x: 1180, y: G - 78, w: 66, h: 78, broken: false },
+      { id: 's2b_c1', type: 'coin', x: 1020, y: G - 54, w: 24, h: 24 },
+      { id: 's2b_gate2', type: 'gate', x: 1500, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Shoot the high bat!
+      { id: 's2b_tree1', type: 'tree', x: 1740, y: G - 115, w: 120, h: 26 },
+      { id: 's2b_gate3', type: 'gate', x: 2360, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 's2b_c2', type: 'coin', x: 2600, y: G - 76, w: 24, h: 24 },
+      { id: 's2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 's2b_bat_high', type: 'bat', word: 'High Bat', heightTag: 'high', x: 2040, y: G - 210, patrolRange: 85, hp: 1 },
+      { id: 's2b_bat_low', type: 'bat', word: 'Low Bat', heightTag: 'low', x: 2060, y: G - 68, patrolRange: 85, hp: 1 },
+    ],
+    missions: [
+      {
+        id: 'ms2b_look',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'look_left_right',
+        text: 'Look left, then look right!',
+        jp: 'まず左（←）を向いて、つぎに右（→）を向こう！',
+        timeLimit: 20,
+        gateId: 's2b_gate1',
+      },
+      {
+        id: 'ms2b_ice',
+        triggerX: 830,
+        checkpointX: 850,
+        type: 'break_object',
+        targetId: 's2b_ice1',
+        text: 'Break the ice!',
+        jp: 'チャージショットで氷（ICE）をこわそう！',
+        timeLimit: 30,
+        gateId: 's2b_gate2',
+      },
+      {
+        id: 'ms2b_hbat',
+        triggerX: 1550,
+        checkpointX: 1570,
+        type: 'defeat_enemy_type',
+        targetId: 's2b_bat_high',
+        forbiddenIds: ['s2b_bat_low'],
+        targetCount: 1,
+        text: 'Shoot the high bat!',
+        jp: '高いところのコウモリを撃とう！（低い方は撃たないで）',
+        timeLimit: 30,
+        gateId: 's2b_gate3',
+      },
+    ],
+  },
+
   'snow-3': {
     id: 'snow-3',
-    name: 'Snow 3: Ice Machine',
+    name: 'Snow 4: Ice Machine',
     world: 'snow',
     width: 2200,
     startX: 60,

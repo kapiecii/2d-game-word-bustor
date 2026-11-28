@@ -147,9 +147,78 @@ export const VOLCANO_STAGES = {
     ],
   },
 
+  'volcano-2b': {
+    id: 'volcano-2b',
+    name: 'Volcano 3: Ash Bridge',
+    world: 'volcano',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Shoot the red slime!
+      { id: 'v2b_c1', type: 'coin', x: 240, y: G - 56, w: 24, h: 24 },
+      { id: 'v2b_gate1', type: 'gate', x: 880, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Jump on the box, then the tree!
+      { id: 'v2b_box', type: 'box', x: 1120, y: G - 54, w: 54, h: 54 },
+      { id: 'v2b_tree', type: 'tree', x: 1290, y: G - 125, w: 120, h: 26 },
+      { id: 'v2b_gate2', type: 'gate', x: 1640, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Shoot number 5! (2, 5, 8)
+      { id: 'v2b_n2', type: 'number_target', num: 2, x: 1860, y: G - 62, w: 42, h: 42 },
+      { id: 'v2b_n5', type: 'number_target', num: 5, x: 2020, y: G - 122, w: 42, h: 42 },
+      { id: 'v2b_n8', type: 'number_target', num: 8, x: 2180, y: G - 62, w: 42, h: 42 },
+      { id: 'v2b_gate3', type: 'gate', x: 2420, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'v2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 'v2b_blue', type: 'blue_slime', word: 'Blue Slime', x: 460, y: G - 24, patrolRange: 70, hp: 2 },
+      { id: 'v2b_red', type: 'red_slime', word: 'Red Slime', x: 680, y: G - 24, patrolRange: 75, hp: 2 },
+    ],
+    missions: [
+      {
+        id: 'mv2b_red',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'defeat_enemy_type',
+        targetType: 'red_slime',
+        forbiddenEnemyType: 'blue_slime',
+        targetCount: 1,
+        text: 'Shoot the red slime!',
+        jp: '赤いスライムを撃とう！（青は撃たないで）',
+        timeLimit: 30,
+        gateId: 'v2b_gate1',
+      },
+      {
+        id: 'mv2b_seq',
+        triggerX: 930,
+        checkpointX: 950,
+        type: 'sequence',
+        subType: 'jump_objects',
+        steps: ['v2b_box', 'v2b_tree'],
+        text: 'Jump on the box, then the tree!',
+        jp: 'まず箱（BOX）、つぎに木（TREE）に飛び乗ろう！',
+        timeLimit: 30,
+        gateId: 'v2b_gate2',
+      },
+      {
+        id: 'mv2b_num5',
+        triggerX: 1690,
+        checkpointX: 1710,
+        type: 'shoot_number',
+        targetNum: 5,
+        text: 'Shoot number 5!',
+        jp: '数字の「5」の的を撃とう！',
+        timeLimit: 25,
+        gateId: 'v2b_gate3',
+      },
+    ],
+  },
+
   'volcano-3': {
     id: 'volcano-3',
-    name: 'Volcano 3: Fire Dragon',
+    name: 'Volcano 4: Fire Dragon',
     world: 'volcano',
     width: 2200,
     startX: 60,

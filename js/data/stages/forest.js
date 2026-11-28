@@ -179,9 +179,79 @@ export const FOREST_STAGES = {
     ],
   },
 
+  'forest-2b': {
+    id: 'forest-2b',
+    name: 'Forest 3: Hidden Grove',
+    world: 'forest',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Get the coin under the tree!
+      { id: 'f2b_tree1', type: 'tree', x: 380, y: G - 122, w: 130, h: 26 },
+      { id: 'f2b_c_top', type: 'coin', x: 432, y: G - 165, w: 24, h: 24 },
+      { id: 'f2b_c_under', type: 'coin', x: 432, y: G - 36, w: 24, h: 24 },
+      { id: 'f2b_gate1', type: 'gate', x: 700, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Shoot the triangle! (Circle / Triangle / Square)
+      { id: 'f2b_sh_c', type: 'shape_target', shape: 'circle', color: 'blue', x: 1040, y: G - 62, w: 46, h: 46 },
+      { id: 'f2b_sh_t', type: 'shape_target', shape: 'triangle', color: 'yellow', x: 1180, y: G - 126, w: 46, h: 46 },
+      { id: 'f2b_sh_s', type: 'shape_target', shape: 'square', color: 'red', x: 1320, y: G - 62, w: 46, h: 46 },
+      { id: 'f2b_gate2', type: 'gate', x: 1520, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Stay on the tree! (3s)
+      { id: 'f2b_box1', type: 'box', x: 1760, y: G - 48, w: 48, h: 48 },
+      { id: 'f2b_tree2', type: 'tree', x: 1920, y: G - 122, w: 130, h: 26 },
+      { id: 'f2b_c2', type: 'coin', x: 1972, y: G - 165, w: 24, h: 24 },
+      { id: 'f2b_gate3', type: 'gate', x: 2320, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'f2b_c3', type: 'coin', x: 2560, y: G - 68, w: 24, h: 24 },
+      { id: 'f2b_goal', type: 'goal', x: 2880, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 'f2b_bat1', type: 'bat', word: 'Bat', x: 2560, y: G - 150, patrolRange: 90, hp: 1 },
+    ],
+    missions: [
+      {
+        id: 'mf2b_under',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'collect_specific_coin',
+        targetId: 'f2b_c_under',
+        text: 'Get the coin under the tree!',
+        jp: '木の下（UNDER）にあるコインを取ろう！',
+        timeLimit: 25,
+        gateId: 'f2b_gate1',
+      },
+      {
+        id: 'mf2b_shape',
+        triggerX: 750,
+        checkpointX: 770,
+        type: 'shoot_shape',
+        targetShape: 'triangle',
+        text: 'Shoot the triangle!',
+        jp: '三角（TRIANGLE）の的を撃とう！',
+        timeLimit: 25,
+        gateId: 'f2b_gate2',
+      },
+      {
+        id: 'mf2b_stay',
+        triggerX: 1570,
+        checkpointX: 1590,
+        type: 'stay_on_object',
+        targetId: 'f2b_tree2',
+        holdSeconds: 3,
+        text: 'Stay on the tree!',
+        jp: '木の上に3びょう乗りつづけよう！',
+        timeLimit: 25,
+        gateId: 'f2b_gate3',
+      },
+    ],
+  },
+
   'forest-3': {
     id: 'forest-3',
-    name: 'Forest 3: Forest Guardian',
+    name: 'Forest 4: Forest Guardian',
     world: 'forest',
     width: 2200,
     startX: 60,

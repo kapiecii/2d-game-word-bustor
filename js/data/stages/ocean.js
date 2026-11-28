@@ -143,9 +143,75 @@ export const OCEAN_STAGES = {
     ],
   },
 
+  'ocean-2b': {
+    id: 'ocean-2b',
+    name: 'Ocean 3: Sunken Ship',
+    world: 'ocean',
+    width: 3100,
+    startX: 60,
+    objects: [
+      // Area 1: Jump 4 times!
+      { id: 'o2b_c1', type: 'coin', x: 260, y: G - 96, w: 24, h: 24 },
+      { id: 'o2b_c2', type: 'coin', x: 380, y: G - 118, w: 24, h: 24 },
+      { id: 'o2b_gate1', type: 'gate', x: 660, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 2: Get the key!
+      { id: 'o2b_box', type: 'box', x: 880, y: G - 48, w: 48, h: 48 },
+      { id: 'o2b_tree', type: 'tree', x: 1040, y: G - 125, w: 120, h: 26 },
+      { id: 'o2b_key', type: 'key', x: 1088, y: G - 165, w: 24, h: 28 },
+      { id: 'o2b_gate2', type: 'gate', x: 1420, y: G - 130, w: 34, h: 130, open: false },
+
+      // Area 3: Dodge the shots!
+      { id: 'o2b_box2', type: 'box', x: 1680, y: G - 48, w: 48, h: 48 },
+      { id: 'o2b_gate3', type: 'gate', x: 2340, y: G - 130, w: 34, h: 130, open: false },
+
+      // Goal
+      { id: 'o2b_c3', type: 'coin', x: 2580, y: G - 68, w: 24, h: 24 },
+      { id: 'o2b_goal', type: 'goal', x: 2900, y: G - 120, w: 56, h: 120 },
+    ],
+    enemies: [
+      { id: 'o2b_tur1', type: 'turret', word: 'Turret', x: 2180, y: G - 26, hp: 3, shootInterval: 1.7 },
+    ],
+    missions: [
+      {
+        id: 'mo2b_nojump',
+        triggerX: 40,
+        checkpointX: 60,
+        type: 'reach_without_jump',
+        targetX: 590,
+        text: "Don't jump! Go to the gate!",
+        jp: 'ジャンプしないでゲートまで歩いて進もう！',
+        timeLimit: 20,
+        gateId: 'o2b_gate1',
+      },
+      {
+        id: 'mo2b_key',
+        triggerX: 710,
+        checkpointX: 730,
+        type: 'collect_key',
+        targetId: 'o2b_key',
+        text: 'Get the key!',
+        jp: '木の上のカギを取ろう！',
+        timeLimit: 25,
+        gateId: 'o2b_gate2',
+      },
+      {
+        id: 'mo2b_dodge',
+        triggerX: 1470,
+        checkpointX: 1490,
+        type: 'dodge_shots',
+        holdSeconds: 5,
+        text: 'Dodge the shots!',
+        jp: '弾に当たらずに5びょうよけよう！',
+        timeLimit: 25,
+        gateId: 'o2b_gate3',
+      },
+    ],
+  },
+
   'ocean-3': {
     id: 'ocean-3',
-    name: 'Ocean 3: Giant Octopus',
+    name: 'Ocean 4: Giant Octopus',
     world: 'ocean',
     width: 2200,
     startX: 60,

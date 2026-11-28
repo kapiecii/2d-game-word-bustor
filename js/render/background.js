@@ -13,6 +13,8 @@ export function drawWorldBackground(ctx, worldId, cameraX, stageWidth, time) {
     drawVolcanoBackground(ctx, cameraX, stageWidth, time);
   } else if (worldId === 'sky') {
     drawSkyBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'candy') {
+    drawCandyBackground(ctx, cameraX, stageWidth, time);
   } else {
     drawForestBackground(ctx, cameraX, stageWidth, time);
   }
@@ -469,6 +471,76 @@ function drawSkyBackground(ctx, cameraX, stageWidth, time) {
     line: '#64b5f6',
     speck: '#e3f2fd',
   });
+}
+
+function drawCandyBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  // Pastel cotton-candy sky
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#ff9ec7');
+  sky.addColorStop(0.55, '#ffd1e6');
+  sky.addColorStop(1, '#fff3c4');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Fluffy pastel clouds (0.15x)
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+  const cloudOffset = -(cameraX * 0.15) % 320;
+  for (let i = -1; i < 7; i++) {
+    const cx = cloudOffset + i * 320 + 40;
+    const cy = 95 + ((i * 53) % 85);
+    ctx.fillRect(cx, cy, 92, 26);
+    ctx.fillRect(cx + 18, cy - 14, 56, 18);
+  }
+
+  // Pastel frosting hills (0.25x)
+  const hillOffset = -(cameraX * 0.25) % 420;
+  for (let i = -1; i < 6; i++) {
+    const hx = hillOffset + i * 420;
+    ctx.fillStyle = i % 2 === 0 ? '#f78fb3' : '#a2d2ff';
+    ctx.beginPath();
+    ctx.arc(hx + 180, groundTop + 60, 240, Math.PI, 0);
+    ctx.fill();
+  }
+
+  // Giant lollipops & candy canes (0.45x)
+  const lolliOffset = -(cameraX * 0.45) % 220;
+  const lolliColors = ['#ff5d9e', '#4cc9f0', '#ffd166', '#45d17a'];
+  for (let i = -1; i < 10; i++) {
+    const lx = lolliOffset + i * 220 + 40;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(lx + 22, groundTop - 135, 10, 135);
+    ctx.fillStyle = lolliColors[(i + 10) % lolliColors.length];
+    ctx.beginPath();
+    ctx.arc(lx + 27, groundTop - 155, 34, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(lx + 27, groundTop - 155, 20, 0, Math.PI * 1.5);
+    ctx.stroke();
+  }
+
+  // Pink frosting & biscuit wafer ground
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#ff70a6',
+    top2: '#ff97b7',
+    tuft: '#fff08a',
+    body: '#c98a52',
+    line: '#9c6234',
+    speck: '#e0a972',
+  });
+
+  // Floating sugar sparkles
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  for (let i = 0; i < 10; i++) {
+    const sx = ((i * 180 + time * 20 - cameraX * 0.5) % w + w) % w;
+    const sy = 160 + Math.sin(time * 2.5 + i) * 50 + (i % 3) * 80;
+    ctx.fillRect(sx, sy, 5, 5);
+  }
 }
 
 function drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, colors) {

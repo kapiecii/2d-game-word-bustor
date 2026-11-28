@@ -150,38 +150,40 @@
 
 ### 6.1 ステージ構成・進行・再挑戦
 * **ワールド・ステージ数**:
-  * 7つの世界を用意し、各世界に3ステージを配置する（現在 **合計21ステージ**）。
+  * 8つの世界を用意し、各世界に4ステージ（通常3ステージ＋ボス1ステージ）を配置する（現在 **合計32ステージ**）。
   * 将来的にさらに世界やステージを追加できる構造にする。
 * **プレイ時間目安**: 1ステージあたり 3〜5分。
 * **ゲーム進行形式**: 通常プレイ（移動・戦闘・コイン収集）とミッション（ゲート開放やナビゲーターの指示達成）を組み合わせる。
 * **ステージ解放ルール**:
   * ステージは決められた順番で進行し、ステージをクリアすると次のステージが解放される（世界をまたいでも同じルールを適用）。
-  * 各世界の3番目のステージを **ボスステージ** とし、ボスを撃破するとその世界をクリアした扱いとする。
+  * 各世界の4番目のステージを **ボスステージ** とし、ボスを撃破するとその世界をクリアした扱いとする。
   * ボス戦でも英語ミッションを導入し、英語の指示に従って攻撃・回避する。
 * **再挑戦・記録**:
   * 一度解放されたステージは、いつでも自由に再挑戦できる。
   * クリア済みステージのスコアやハイスコアは保存する。
 
 #### ステージ解放イメージ
-1. **Forest World**: `Forest 1` → `Forest 2` → `Forest 3`（ボス：Forest Guardian）
-2. **Desert World**: `Desert 1` → `Desert 2` → `Desert 3`（ボス：Rock Golem）
-3. **Snow World**: `Snow 1` → `Snow 2` → `Snow 3`（ボス：Ice Machine）
-4. **Robot World**: `Robot 1` → `Robot 2` → `Robot 3`（ボス：Mega Robot）
-5. **Ocean World**: `Ocean 1` → `Ocean 2` → `Ocean 3`（ボス：Giant Octopus）
-6. **Volcano World**: `Volcano 1` → `Volcano 2` → `Volcano 3`（ボス：Fire Dragon）
-7. **Sky World**: `Sky 1` → `Sky 2` → `Sky 3`（ボス：Thunder Bird）
+1. **Forest World**: `Forest 1` → `Forest 2` → `Forest 3` → `Forest 4`（ボス：Forest Guardian）
+2. **Desert World**: `Desert 1` → `Desert 2` → `Desert 3` → `Desert 4`（ボス：Rock Golem）
+3. **Snow World**: `Snow 1` → `Snow 2` → `Snow 3` → `Snow 4`（ボス：Ice Machine）
+4. **Robot World**: `Robot 1` → `Robot 2` → `Robot 3` → `Robot 4`（ボス：Mega Robot）
+5. **Ocean World**: `Ocean 1` → `Ocean 2` → `Ocean 3` → `Ocean 4`（ボス：Giant Octopus）
+6. **Volcano World**: `Volcano 1` → `Volcano 2` → `Volcano 3` → `Volcano 4`（ボス：Fire Dragon）
+7. **Sky World**: `Sky 1` → `Sky 2` → `Sky 3` → `Sky 4`（ボス：Thunder Bird）
+8. **Candy World**: `Candy 1` → `Candy 2` → `Candy 3` → `Candy 4`（ボス：Candy King）
 
 ※ 各ステージのクリアが次のステージの解放条件となる。
 
 ### 6.2 ボス構成・ボス戦仕様
-* **ボス構成（全7体・個性別AI）**:
-  * **Forest 3：Forest Guardian** — 巨大な森のモンスター。弾・ジャンプ・接近の基本バランス型。
-  * **Desert 3：Rock Golem** — 岩石の大型モンスター。高速突進（`"Jump over the boss!"`）とジャンプ攻撃。
-  * **Snow 3：Ice Machine** — 氷の大型ロボット。2連弾（`"Jump over the shots!"`）と突進。
-  * **Robot 3：Mega Robot** — 大型戦闘ロボット。高低2方向弾と高速突進の総合戦。
-  * **Ocean 3：Giant Octopus** — 巨大タコ型ボス。泡の拡散弾（`"Dodge the bubbles!"`）と大ジャンプ。
-  * **Volcano 3：Fire Dragon** — 炎のドラゴン。空中ホバリングからの火の玉投下（`"Look up! Move left/right!"`）と急降下。
-  * **Sky 3：Thunder Bird** — 雷の鳥。空中移動からの落雷弾・疾風突進・空中停止（`"Jump and shoot!"`）。
+* **ボス構成（全8体・個性別AI）**:
+  * **Forest 4：Forest Guardian** — 巨大な森のモンスター。弾・ジャンプ・接近の基本バランス型。
+  * **Desert 4：Rock Golem** — 岩石の大型モンスター。高速突進（`"Jump over the boss!"`）とジャンプ攻撃。
+  * **Snow 4：Ice Machine** — 氷の大型ロボット。2連弾（`"Jump over the shots!"`）と突進。
+  * **Robot 4：Mega Robot** — 大型戦闘ロボット。高低2方向弾と高速突進の総合戦。
+  * **Ocean 4：Giant Octopus** — 巨大タコ型ボス。泡の拡散弾（`"Dodge the bubbles!"`）と大ジャンプ。
+  * **Volcano 4：Fire Dragon** — 炎のドラゴン。空中ホバリングからの火の玉投下（`"Look up! Move left/right!"`）と急降下。
+  * **Sky 4：Thunder Bird** — 雷の鳥。空中移動からの落雷弾・疾風突進・空中停止（`"Jump and shoot!"`）。
+  * **Candy 4：Candy King** — お菓子の王様。キャンディ拡散弾（`"Dodge the candy!"`）・大ジャンプ・2連弾。
 * **ボス戦・英語ミッション**:
   * ボスの攻撃パターンや状況に応じて、Buddyが英語で指示を出す。
   * プレイヤーは指示の意味を理解し、適切な操作（攻撃・回避・移動など）を行う。
@@ -215,11 +217,11 @@
 ### 6.3 通常ステージのミッション例（バリエーション一覧）
 ステージ途中のゲート前やエリア進入時にミッションが発生する。
 
-1. **収集・基本アクション**: `"Get 3 coins!"` / `"Get the key!"` / `"Jump 3 times!"`
-2. **位置・前置詞**: `"Jump on the left box!"` / `"Shoot the high bat!"` / `"Get the coin under the tree!"`
-3. **色・大きさの識別**: `"Shoot the red slime!"` / `"Shoot the big slime!"` / `"Get the blue star!"` / `"Shoot the green switch!"`
-4. **ルール・回避（キープ系）**: `"Don't move!"`（3秒静止） / `"Stay on the tree!"`（3秒滞在） / `"Dodge the shots!"`（5秒回避）
-5. **順番（2ステップ）**: `"Jump on the box, then the tree!"` / `"Shoot red, then blue!"`
+1. **収集・基本アクション**: `"Get 3 coins!"` / `"Get the key!"` / `"Jump 3 times!"` / `"Use a big shot!"`
+2. **位置・方向・前置詞**: `"Jump on the left box!"` / `"Shoot the high bat!"` / `"Get the coin under the tree!"` / `"Look left, then look right!"`
+3. **色・大きさ・形・数字の識別**: `"Shoot the red slime!"` / `"Shoot the big slime!"` / `"Get the blue star!"` / `"Shoot the green switch!"` / `"Shoot the triangle!"`（`circle` / `square` / `triangle`） / `"Shoot number 5!"`
+4. **ルール・回避（キープ・禁止系）**: `"Don't move!"`（3秒静止） / `"Don't jump! Go to the gate!"`（ジャンプ禁止進行） / `"Stay on the tree!"`（3秒滞在） / `"Dodge the shots!"`（5秒回避）
+5. **順番（2〜3ステップ）**: `"Jump on the box, then the tree!"` / `"Shoot red, then blue!"` / `"Shoot 1, 2, 3!"`
 6. **ワールド固有ギミック**: `"Break the rock!"`（岩破壊） / `"Jump over the cactus!"`（砂漠のサボテン） / `"Break the ice!"`（雪原の氷） / `"Stop the laser!"`（ロボット工場のレーザー停止）
 
 ### 6.4 ライフ・制限時間・成功／失敗時の処理

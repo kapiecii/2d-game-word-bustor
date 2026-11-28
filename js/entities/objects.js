@@ -176,6 +176,46 @@ export function drawWorldObjects(ctx, objects, cameraX, time) {
 
       const label = obj.label || `${(obj.color || '').toUpperCase()} SWITCH`;
       drawObjectLabel(ctx, label.trim(), sx + obj.w / 2, sy - 6);
+    } else if (obj.type === 'shape_target') {
+      const c = COLOR_MAP[obj.color] || COLOR_MAP.blue;
+      ctx.fillStyle = obj.activated ? '#45d17a' : '#1b2640';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = '#9fb0cc';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx + 1, sy + 1, obj.w - 2, obj.h - 2);
+
+      const cx = sx + obj.w / 2;
+      const cy = sy + obj.h / 2;
+      ctx.fillStyle = obj.activated ? '#ffffff' : c.fill;
+      if (obj.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(cx, cy, obj.w * 0.32, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (obj.shape === 'square') {
+        const s = obj.w * 0.54;
+        ctx.fillRect(cx - s / 2, cy - s / 2, s, s);
+      } else if (obj.shape === 'triangle') {
+        const r = obj.w * 0.34;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - r);
+        ctx.lineTo(cx + r, cy + r * 0.85);
+        ctx.lineTo(cx - r, cy + r * 0.85);
+        ctx.closePath();
+        ctx.fill();
+      }
+      drawObjectLabel(ctx, (obj.shape || 'SHAPE').toUpperCase(), cx, sy - 6);
+    } else if (obj.type === 'number_target') {
+      ctx.fillStyle = obj.activated ? '#45d17a' : '#24345a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = obj.activated ? '#98f5b8' : '#ffd24c';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(sx + 1.5, sy + 1.5, obj.w - 3, obj.h - 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 22px "Trebuchet MS", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(obj.num ?? ''), sx + obj.w / 2, sy + obj.h / 2 + 1);
+      ctx.textBaseline = 'alphabetic';
     } else if (obj.type === 'box') {
       ctx.fillStyle = '#b07232';
       ctx.fillRect(sx, sy, obj.w, obj.h);

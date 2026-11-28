@@ -98,6 +98,7 @@
 
             <div class="title-actions">
               <button id="btn-go-stages" class="primary-btn" type="button">START GAME</button>
+              <button id="btn-title-save" class="secondary-btn" type="button">💾 Save / Load</button>
             </div>
 
             <div class="controls-strip">
@@ -124,6 +125,7 @@
                   <span id="stages-wallet">0</span>
                 </div>
                 <button id="btn-open-shop" class="primary-btn shop-open-btn" type="button">🛒 SHOP</button>
+                <button id="btn-stages-save" class="secondary-btn" type="button">💾 Data</button>
                 <button id="btn-back-title" class="secondary-btn" type="button">← Title</button>
               </div>
             </div>
@@ -163,6 +165,43 @@
                 </div>
                 <div id="shop-items-grid" class="shop-items-grid"></div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Data Export / Import Modal -->
+        <div id="modal-save" class="overlay-screen hidden">
+          <div class="panel modal-panel save-panel">
+            <h2 class="panel-title">SAVE DATA BACKUP</h2>
+            <p class="panel-sub">Export your progress to transfer it to another browser.</p>
+
+            <div class="save-section">
+              <div class="section-label">EXPORT (BACKUP)</div>
+              <div class="save-btn-row">
+                <button id="btn-export-file" class="primary-btn" type="button">⬇ Download JSON</button>
+                <button id="btn-export-copy" class="secondary-btn" type="button">📋 Copy JSON</button>
+              </div>
+            </div>
+
+            <div class="save-section">
+              <div class="section-label">IMPORT (RESTORE)</div>
+              <div class="save-btn-row">
+                <button id="btn-import-file" class="secondary-btn" type="button">⬆ Choose JSON File</button>
+                <input id="input-import-file" type="file" accept=".json,application/json" class="hidden" />
+              </div>
+              <textarea
+                id="textarea-import-json"
+                class="save-textarea"
+                rows="4"
+                placeholder="Or paste exported JSON here..."
+              ></textarea>
+              <button id="btn-import-paste" class="primary-btn" type="button">Restore from Text</button>
+            </div>
+
+            <div id="save-status" class="save-status hidden"></div>
+
+            <div class="modal-actions">
+              <button id="btn-save-close" class="secondary-btn" type="button">Close</button>
             </div>
           </div>
         </div>

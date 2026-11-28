@@ -37,8 +37,14 @@ export class HudController {
     this.screenTitle = document.getElementById('screen-title');
     this.screenStages = document.getElementById('screen-stages');
     this.screenShop = document.getElementById('screen-shop');
+    this.modalSave = document.getElementById('modal-save');
     this.modalSettings = document.getElementById('modal-settings');
     this.screenClear = document.getElementById('screen-clear');
+
+    // Save Export / Import
+    this.inputImportFile = document.getElementById('input-import-file');
+    this.textareaImportJson = document.getElementById('textarea-import-json');
+    this.saveStatusEl = document.getElementById('save-status');
 
     // Wallet & Shop
     this.stagesWalletEl = document.getElementById('stages-wallet');
@@ -88,6 +94,47 @@ export class HudController {
 
     document.getElementById('btn-open-shop').addEventListener('click', () => {
       this.handlers.onOpenShop();
+    });
+
+    document.getElementById('btn-title-save').addEventListener('click', () => {
+      this.handlers.onOpenSaveModal();
+    });
+
+    document.getElementById('btn-stages-save').addEventListener('click', () => {
+      this.handlers.onOpenSaveModal();
+    });
+
+    document.getElementById('btn-save-close').addEventListener('click', () => {
+      this.handlers.onCloseSaveModal();
+    });
+
+    document.getElementById('btn-export-file').addEventListener('click', () => {
+      this.handlers.onExportFile();
+    });
+
+    document.getElementById('btn-export-copy').addEventListener('click', () => {
+      this.handlers.onExportCopy();
+    });
+
+    document.getElementById('btn-import-file').addEventListener('click', () => {
+      this.inputImportFile.value = '';
+      this.inputImportFile.click();
+    });
+
+    this.inputImportFile.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          this.handlers.onImportText(reader.result);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('btn-import-paste').addEventListener('click', () => {
+      this.handlers.onImportText(this.textareaImportJson.value);
     });
 
     document.getElementById('btn-shop-back').addEventListener('click', () => {
@@ -164,12 +211,24 @@ export class HudController {
     this.screenShop.classList.toggle('hidden', name !== 'shop');
     this.screenClear.classList.toggle('hidden', name !== 'clear');
     this.modalSettings.classList.toggle('hidden', name !== 'pause');
+    this.modalSave.classList.toggle('hidden', name !== 'save');
 
     const playing = name === 'play' || name === 'pause' || name === 'clear';
     this.hudEl.classList.toggle('hidden', !playing);
     if (!playing) {
       this.bannerEl.classList.add('hidden');
     }
+  }
+
+  openSaveModal() {
+    this.textareaImportJson.value = '';
+    this.saveStatusEl.classList.add('hidden');
+    this.showScreen('save');
+  }
+
+  showSaveStatus(message, ok = true) {
+    this.saveStatusEl.textContent = message;
+    this.saveStatusEl.className = `save-status ${ok ? 'ok' : 'err'}`;
   }
 
   renderWorldSelect(worlds, storage) {
@@ -283,7 +342,7 @@ export class HudController {
       this.clearUnlockEl.textContent = `NEW STAGE UNLOCKED: ${nextStageId.toUpperCase()}!`;
       this.clearUnlockEl.classList.remove('hidden');
     } else if (!nextStageId) {
-      this.clearUnlockEl.textContent = 'ALL 7 WORLDS COMPLETE! YOU ARE A WORD BUSTER!';
+      this.clearUnlockEl.textContent = 'ALL 8 WORLDS COMPLETE! YOU ARE A WORD BUSTER!';
       this.clearUnlockEl.classList.remove('hidden');
     } else {
       this.clearUnlockEl.classList.add('hidden');

@@ -43,6 +43,8 @@ export class MissionManager {
       progressText = `${rem.toFixed(1)}s`;
     } else if (m.type === 'sequence' && Array.isArray(m.steps)) {
       progressText = `${m.stepIndex} / ${m.steps.length}`;
+    } else if (m.type === 'look_left_right') {
+      progressText = `${m.stepIndex} / 2`;
     } else if (m.targetCount && m.targetCount > 1) {
       progressText = `${m.progress} / ${m.targetCount}`;
     }
@@ -152,6 +154,17 @@ export class MissionManager {
           this.completeActiveMission();
         }
       }
+    } else if (m.type === 'reach_without_jump') {
+      if (player.x >= m.targetX) {
+        this.completeActiveMission();
+      }
+    } else if (m.type === 'look_left_right') {
+      if (m.stepIndex === 0 && player.facing < 0) {
+        m.stepIndex = 1;
+      } else if (m.stepIndex === 1 && player.facing > 0) {
+        m.stepIndex = 2;
+        this.completeActiveMission();
+      }
     }
   }
 
@@ -174,11 +187,64 @@ export class MissionManager {
   }
 
   onPlayerJump() {
-    if (!this.activeMission || this.activeMission.type !== 'jump_count') return;
+    if (!this.activeMission) return;
+    if (this.activeMission.type === 'jump_count') {
+      this.activeMission.progress += 1;
+      if (this.activeMission.progress >= (this.activeMission.targetCount || 3)) {
+        this.completeActiveMission();
+      }
+    } else if (this.activeMission.type === 'reach_without_jump') {
+      this.triggerFail("Don't jump!");
+    }
+  }
+
+  onPlayerShoot(charged) {
+    if (!this.activeMission || this.activeMission.type !== 'use_charge_shot') return;
+    if (!charged) return;
     this.activeMission.progress += 1;
-    if (this.activeMission.progress >= (this.activeMission.targetCount || 3)) {
+    if (this.activeMission.progress >= (this.activeMission.targetCount || 1)) {
       this.completeActiveMission();
     }
+  }
+
+  onShapeHit(shapeObj) {
+    if (!this.activeMission || this.activeMission.type !== 'shoot_shape') return false;
+    if (shapeObj.shape === this.activeMission.targetShape) {
+      shapeObj.activated = true;
+      this.completeActiveMission();
+      return true;
+    }
+    this.triggerFail('Wrong shape!');
+    return false;
+  }
+
+  onNumberHit(numObj) {
+    if (!this.activeMission) return false;
+    const m = this.activeMission;
+    if (m.type === 'shoot_number') {
+      if (numObj.num === m.targetNum) {
+        numObj.activated = true;
+        this.completeActiveMission();
+        return true;
+      }
+      this.triggerFail('Wrong number!');
+      return false;
+    }
+    if (m.type === 'sequence' && m.subType === 'shoot_numbers') {
+      const expected = m.steps[m.stepIndex];
+      if (numObj.num === expected) {
+        numObj.activated = true;
+        m.stepIndex += 1;
+        if (m.stepIndex >= m.steps.length) {
+          this.completeActiveMission();
+        }
+        return true;
+      }
+      m.stepIndex = 0;
+      this.triggerFail('Wrong order!');
+      return false;
+    }
+    return false;
   }
 
   onPlayerDamaged() {

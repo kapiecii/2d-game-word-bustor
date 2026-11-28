@@ -14,6 +14,7 @@ const BOSS_PATTERNS = {
   giant_octopus: ['spread_shot', 'big_jump', 'approach'],
   fire_dragon: ['hover_drop', 'shoot', 'swoop'],
   thunder_bird: ['hover_drop', 'dash', 'hover_pause'],
+  candy_king: ['spread_shot', 'big_jump', 'double_shot'],
 };
 
 export class Boss {
@@ -212,9 +213,10 @@ export class Boss {
     } else if (type === 'spread_shot') {
       this.actionTimer = 1.45;
       const isOcto = this.id === 'giant_octopus';
+      const isCandy = this.id === 'candy_king';
       onInstruction({
-        text: isOcto ? 'Dodge the bubbles!' : 'Watch out! Jump!',
-        jp: isOcto ? '泡の攻撃をよけて！' : '気をつけて！ジャンプ！',
+        text: isOcto ? 'Dodge the bubbles!' : isCandy ? 'Dodge the candy!' : 'Watch out! Jump!',
+        jp: isOcto ? '泡の攻撃をよけて！' : isCandy ? 'キャンディ攻撃をよけて！' : '気をつけて！ジャンプ！',
       });
     } else if (type === 'dash') {
       this.actionTimer = 1.25;
