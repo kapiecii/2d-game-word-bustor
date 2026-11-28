@@ -65,6 +65,7 @@ export class Game {
 
     this.missionManager = new MissionManager(stageData.missions || [], {
       onSpeak: (text, priority) => this.speech.speak(text, priority),
+      onMissionStart: (mission) => this.handleMissionStart(mission),
       onMissionSuccess: (mission, praise) => this.handleMissionSuccess(mission, praise),
       onMissionFail: (encourage, reason) => this.handleMissionFail(encourage, reason),
     });
@@ -425,6 +426,46 @@ export class Game {
     this.buddy.setMood('encourage', 2.5);
     this.speech.speak('You can do it!', 3);
     this.spawnFloatingText('YOU CAN DO IT!', this.player.x + 20, this.player.y - 20, '#ffe066');
+  }
+
+  handleMissionStart(mission) {
+    const gate = mission.gateId
+      ? this.objects.find((o) => o.id === mission.gateId)
+      : null;
+    const areaMinX = (mission.triggerX ?? 0) - 80;
+    const areaMaxX = gate ? gate.x : this.stage.width;
+
+    // Respawn required enemies if they were already defeated before the mission started
+    if (mission.type === 'defeat_enemy_type') {
+      for (const enemy of this.enemies) {
+        if (enemy.alive) continue;
+        const inArea = enemy.startX >= areaMinX && enemy.startX <= areaMaxX;
+        const isTarget =
+          (mission.targetId && enemy.id === mission.targetId) ||
+          (mission.targetType && enemy.type === mission.targetType && inArea);
+        const isContrast =
+          (mission.forbiddenIds && mission.forbiddenIds.includes(enemy.id)) ||
+          (mission.forbiddenEnemyType && enemy.type === mission.forbiddenEnemyType && inArea);
+
+        if (isTarget || isContrast) {
+          enemy.respawn();
+          this.spawnBurst(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, '#4cc9f0', 10);
+        }
+      }
+    } else if (mission.type === 'dodge_shots') {
+      for (const enemy of this.enemies) {
+        if (!enemy.alive && enemy.type === 'turret' && enemy.startX >= areaMinX && enemy.startX <= areaMaxX) {
+          enemy.respawn();
+          this.spawnBurst(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, '#4cc9f0', 8);
+        }
+      }
+    } else if ((mission.type === 'break_object' || mission.type === 'break_rock') && mission.targetId) {
+      const target = this.objects.find((o) => o.id === mission.targetId);
+      if (target && target.broken) {
+        target.broken = false;
+        this.spawnBurst(target.x + target.w / 2, target.y + target.h / 2, '#9aa5b1', 10);
+      }
+    }
   }
 
   handleMissionSuccess(mission, praise) {

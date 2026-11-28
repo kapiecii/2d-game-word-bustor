@@ -167,6 +167,9 @@ export class MissionManager {
     if (typeof m.checkpointX === 'number') {
       this.checkpointX = m.checkpointX;
     }
+    if (this.callbacks.onMissionStart) {
+      this.callbacks.onMissionStart(m);
+    }
     this.callbacks.onSpeak(m.text, 3);
   }
 

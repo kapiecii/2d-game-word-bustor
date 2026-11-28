@@ -97,6 +97,15 @@ export class Enemy {
     return false;
   }
 
+  respawn() {
+    this.x = this.startX;
+    this.y = this.startY;
+    this.hp = this.maxHp;
+    this.alive = true;
+    this.hitFlash = 0;
+    this.shootTimer = this.shootInterval;
+  }
+
   draw(ctx, cameraX) {
     if (!this.alive) return;
     const sx = Math.floor(this.x - cameraX);
