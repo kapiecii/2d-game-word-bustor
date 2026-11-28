@@ -243,15 +243,19 @@
 * **評価・コイン方式**:
   * スコア制を採用する（コイン取得、敵撃破、ミッション成功、クリアタイム等で加算・ハイスコア保存）。
   * ステージで集めたコイン（＋ステージクリアボーナス3枚）を累計所持コイン（`totalCoins`）として `localStorage` に保存し、**Hero Shop** でアイテムを購入できる。
-* **Weapons（攻撃能力が変わる武器）**:
+* **Weapons（攻撃能力が変わる武器・全9種）**:
   * `Normal Buster`（初期装備・最大3発）
   * `Rapid Buster`（15 coins・連射＆弾速アップ、最大5発）
   * `Twin Shot`（25 coins・上下2発同時発射）
   * `Hyper Charge`（30 coins・チャージ時間短縮＆大型4ダメージ弾）
   * `Spread Shot`（35 coins・前・斜め上・斜め下の3方向発射）
-* **Fashion（見た目が変わるファッションアイテム）**:
-  * **スーツカラー**: `Red Suit`（初期） / `Blue Suit`（10 coins） / `Ninja Black`（20 coins） / `Star Gold`（30 coins）
-  * **アクセサリー**: `No Accessory`（初期） / `Sunglasses`（15 coins） / `Hero Cape`（20 coins） / `King Crown`（30 coins）
+  * `Laser Beam`（40 coins・超高速貫通レーザー、2ダメージ）
+  * `Bounce Shot`（40 coins・地面を跳ねるバウンド弾、2ダメージ）
+  * `Wave Buster`（45 coins・波状にうねる2連プラズマ弾）
+  * `Mega Nova`（60 coins・5方向ショット＋高速チャージの最強武器）
+* **Fashion（見た目が変わるファッションアイテム・全16種）**:
+  * **スーツカラー（8色）**: `Red Suit` / `Blue Suit` / `Emerald Suit` / `Sakura Pink` / `Ninja Black` / `Ice Cyan` / `Star Gold` / `Galaxy Purple`
+  * **アクセサリー（8種）**: `No Accessory` / `Sunglasses` / `Cat Ears` / `Hero Cape` / `Wizard Hat` / `Golden Halo` / `King Crown` / `Angel Wings`
 
 ## 8. グラフィック・サウンド方針
 

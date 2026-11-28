@@ -2,29 +2,63 @@ import { CONFIG } from '../config.js';
 import { getCoinSprite, getKeySprite } from '../render/sprites.js';
 
 export class Bullet {
-  constructor(x, y, vx, vy, isPlayer = true, charged = false, hyper = false) {
+  constructor(x, y, vx, vy, isPlayer = true, charged = false, hyper = false, options = {}) {
     this.x = x;
     this.y = y;
+    this.baseY = y;
     this.vx = vx;
     this.vy = vy;
     this.isPlayer = isPlayer;
     this.charged = charged;
     this.hyper = hyper;
-    this.w = hyper ? 38 : charged ? 28 : 12;
-    this.h = hyper ? 24 : charged ? 18 : 8;
-    this.damage = hyper
-      ? CONFIG.CHARGE_BULLET_DAMAGE + 1
-      : charged
-      ? CONFIG.CHARGE_BULLET_DAMAGE
-      : CONFIG.NORMAL_BULLET_DAMAGE;
+    this.style = options.style || 'normal'; // 'normal' | 'laser' | 'wave' | 'bounce'
+    this.piercing = Boolean(options.piercing || charged);
+    this.wavePhase = options.wavePhase || 0;
+    this.age = 0;
+
+    if (this.style === 'laser') {
+      this.w = 34;
+      this.h = 6;
+    } else if (this.style === 'bounce') {
+      this.w = 14;
+      this.h = 14;
+    } else if (this.style === 'wave') {
+      this.w = 14;
+      this.h = 10;
+    } else {
+      this.w = hyper ? 38 : charged ? 28 : 12;
+      this.h = hyper ? 24 : charged ? 18 : 8;
+    }
+
+    this.damage =
+      options.damage ??
+      (hyper
+        ? CONFIG.CHARGE_BULLET_DAMAGE + 1
+        : charged
+        ? CONFIG.CHARGE_BULLET_DAMAGE
+        : CONFIG.NORMAL_BULLET_DAMAGE);
     this.alive = true;
-    this.life = 2.2;
+    this.life = options.life || 2.2;
     this.hitIds = new Set();
   }
 
   update(dt) {
+    this.age += dt;
     this.x += this.vx * dt;
-    this.y += this.vy * dt;
+
+    if (this.style === 'wave') {
+      this.y = this.baseY + Math.sin(this.age * 16 + this.wavePhase) * 28;
+    } else if (this.style === 'bounce') {
+      this.vy += 1250 * dt;
+      this.y += this.vy * dt;
+      if (this.y + this.h >= CONFIG.GROUND_Y) {
+        this.y = CONFIG.GROUND_Y - this.h;
+        this.vy = -380;
+      }
+    } else {
+      this.y += this.vy * dt;
+    }
+
     this.life -= dt;
     if (this.life <= 0) this.alive = false;
   }
@@ -42,6 +76,25 @@ export class Bullet {
         ctx.fillRect(sx + 2, sy + 2, this.w - 4, this.h - 4);
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(sx + 6, sy + 5, this.w - 12, this.h - 10);
+      } else if (this.style === 'laser') {
+        ctx.fillStyle = '#00bbf9';
+        ctx.fillRect(sx, sy - 1, this.w, this.h + 2);
+        ctx.fillStyle = '#e0fbff';
+        ctx.fillRect(sx + 2, sy + 1, this.w - 4, this.h - 2);
+      } else if (this.style === 'wave') {
+        ctx.fillStyle = '#f15bb5';
+        ctx.fillRect(sx, sy, this.w, this.h);
+        ctx.fillStyle = '#ffe5f4';
+        ctx.fillRect(sx + 3, sy + 2, this.w - 6, this.h - 4);
+      } else if (this.style === 'bounce') {
+        ctx.fillStyle = '#38b000';
+        ctx.beginPath();
+        ctx.arc(sx + this.w / 2, sy + this.h / 2, this.w / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ccff90';
+        ctx.beginPath();
+        ctx.arc(sx + this.w / 2 - 2, sy + this.h / 2 - 2, this.w / 4, 0, Math.PI * 2);
+        ctx.fill();
       } else {
         ctx.fillStyle = '#4cc9f0';
         ctx.fillRect(sx, sy, this.w, this.h);

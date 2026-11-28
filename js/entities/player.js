@@ -90,10 +90,11 @@ export class Player {
       this.chargeReadyPlayed = false;
     }
 
-    const chargeReadyTime =
-      this.equipped.weapon === 'weapon_charge'
-        ? CONFIG.CHARGE_READY_TIME * 0.55
-        : CONFIG.CHARGE_READY_TIME;
+    const hasFastCharge =
+      this.equipped.weapon === 'weapon_charge' || this.equipped.weapon === 'weapon_nova';
+    const chargeReadyTime = hasFastCharge
+      ? CONFIG.CHARGE_READY_TIME * 0.55
+      : CONFIG.CHARGE_READY_TIME;
 
     if (this.isCharging && input.shootHeld) {
       this.chargeTime += dt;
@@ -142,10 +143,11 @@ export class Player {
     const sx = Math.floor(this.x - cameraX);
     const sy = Math.floor(this.y);
 
-    const chargeReadyTime =
-      this.equipped.weapon === 'weapon_charge'
-        ? CONFIG.CHARGE_READY_TIME * 0.55
-        : CONFIG.CHARGE_READY_TIME;
+    const hasFastCharge =
+      this.equipped.weapon === 'weapon_charge' || this.equipped.weapon === 'weapon_nova';
+    const chargeReadyTime = hasFastCharge
+      ? CONFIG.CHARGE_READY_TIME * 0.55
+      : CONFIG.CHARGE_READY_TIME;
 
     // Charge aura
     if (this.isCharging && this.chargeTime >= CONFIG.CHARGE_START_TIME) {
@@ -174,6 +176,6 @@ export class Player {
 
     drawPlayerCape(ctx, this.equipped.accessory, drawX, drawY, sprite.width, sprite.height, this.facing, time);
     ctx.drawImage(sprite, drawX, drawY);
-    drawPlayerFrontAccessory(ctx, this.equipped.accessory, drawX, drawY, sprite.width, sprite.height, this.facing);
+    drawPlayerFrontAccessory(ctx, this.equipped.accessory, drawX, drawY, sprite.width, sprite.height, this.facing, time);
   }
 }

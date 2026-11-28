@@ -249,8 +249,12 @@ const GIRL_JUMP = [
 const SUIT_OVERRIDES = {
   suit_red: { R: '#e63946', D: '#9e1c28', H: '#ff7582' },
   suit_blue: { R: '#2f80ed', D: '#1b498a', H: '#7cc0ff' },
+  suit_green: { R: '#2ec4b6', D: '#1b7a72', H: '#80ffdb' },
+  suit_pink: { R: '#ff70a6', D: '#c93870', H: '#ffb8d4' },
   suit_ninja: { R: '#2d3748', D: '#141923', H: '#ffd166' },
+  suit_ice: { R: '#4cc9f0', D: '#2579a8', H: '#d4f6ff' },
   suit_gold: { R: '#f2b705', D: '#b57b00', H: '#fff08a' },
+  suit_galaxy: { R: '#7209b7', D: '#3c096c', H: '#ffd166' },
 };
 
 export function getPlayerSprite(charType, state, flipX = false, scale = 2, suitId = 'suit_red') {
@@ -266,30 +270,51 @@ export function getPlayerSprite(charType, state, flipX = false, scale = 2, suitI
 }
 
 export function drawPlayerCape(ctx, accessoryId, drawX, drawY, spriteW, spriteH, facing = 1, time = 0) {
-  if (accessoryId !== 'acc_cape') return;
-  const wave = Math.sin(time * 9) * 3;
-  const backX = facing > 0 ? drawX + spriteW * 0.28 : drawX + spriteW * 0.72;
-  const topY = drawY + spriteH * 0.44;
-  const tailX = backX - facing * (spriteW * 0.42);
-  const bottomY = drawY + spriteH * 0.88 + wave;
+  if (accessoryId === 'acc_cape') {
+    const wave = Math.sin(time * 9) * 3;
+    const backX = facing > 0 ? drawX + spriteW * 0.28 : drawX + spriteW * 0.72;
+    const topY = drawY + spriteH * 0.44;
+    const tailX = backX - facing * (spriteW * 0.42);
+    const bottomY = drawY + spriteH * 0.88 + wave;
 
-  ctx.save();
-  ctx.fillStyle = '#e63946';
-  ctx.beginPath();
-  ctx.moveTo(backX, topY);
-  ctx.lineTo(tailX, topY + 6 + wave * 0.5);
-  ctx.lineTo(tailX - facing * 4, bottomY);
-  ctx.lineTo(backX - facing * 4, bottomY - 4);
-  ctx.closePath();
-  ctx.fill();
+    ctx.save();
+    ctx.fillStyle = '#e63946';
+    ctx.beginPath();
+    ctx.moveTo(backX, topY);
+    ctx.lineTo(tailX, topY + 6 + wave * 0.5);
+    ctx.lineTo(tailX - facing * 4, bottomY);
+    ctx.lineTo(backX - facing * 4, bottomY - 4);
+    ctx.closePath();
+    ctx.fill();
 
-  ctx.strokeStyle = '#ffd24c';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.restore();
+    ctx.strokeStyle = '#ffd24c';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+  } else if (accessoryId === 'acc_wings') {
+    const flap = Math.sin(time * 10) * 5;
+    const backX = facing > 0 ? drawX + spriteW * 0.28 : drawX + spriteW * 0.72;
+    const midY = drawY + spriteH * 0.52;
+    const tipX = backX - facing * (spriteW * 0.52);
+
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#90e0ef';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(backX, midY);
+    ctx.lineTo(tipX, midY - spriteH * 0.26 + flap);
+    ctx.lineTo(tipX + facing * 6, midY + spriteH * 0.04 + flap * 0.5);
+    ctx.lineTo(tipX + facing * 2, midY + spriteH * 0.16);
+    ctx.lineTo(backX, midY + spriteH * 0.14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
-export function drawPlayerFrontAccessory(ctx, accessoryId, drawX, drawY, spriteW, spriteH, facing = 1) {
+export function drawPlayerFrontAccessory(ctx, accessoryId, drawX, drawY, spriteW, spriteH, facing = 1, time = 0) {
   if (accessoryId === 'acc_crown') {
     const cw = Math.round(spriteW * 0.44);
     const ch = Math.round(spriteH * 0.2);
@@ -326,6 +351,61 @@ export function drawPlayerFrontAccessory(ctx, accessoryId, drawX, drawY, spriteW
     ctx.fillStyle = '#4cc9f0';
     ctx.fillRect(gx + 2, gy + 1, Math.max(3, gw * 0.28), Math.max(2, gh * 0.45));
     ctx.fillRect(gx + Math.round(gw * 0.56), gy + 1, Math.max(3, gw * 0.28), Math.max(2, gh * 0.45));
+    ctx.restore();
+  } else if (accessoryId === 'acc_cat_ears') {
+    const earW = Math.round(spriteW * 0.18);
+    const earH = Math.round(spriteH * 0.18);
+    const leftX = Math.round(drawX + spriteW * 0.26);
+    const rightX = Math.round(drawX + spriteW * 0.56);
+    const baseY = Math.round(drawY + spriteH * 0.08);
+    ctx.save();
+    [leftX, rightX].forEach((ex) => {
+      ctx.fillStyle = '#2d3748';
+      ctx.beginPath();
+      ctx.moveTo(ex, baseY);
+      ctx.lineTo(ex + earW * 0.5, baseY - earH);
+      ctx.lineTo(ex + earW, baseY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#ff9ec7';
+      ctx.beginPath();
+      ctx.moveTo(ex + 2, baseY - 1);
+      ctx.lineTo(ex + earW * 0.5, baseY - earH * 0.6);
+      ctx.lineTo(ex + earW - 2, baseY - 1);
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.restore();
+  } else if (accessoryId === 'acc_wizard_hat') {
+    const brimW = Math.round(spriteW * 0.72);
+    const brimH = Math.max(5, Math.round(spriteH * 0.09));
+    const bx = Math.round(drawX + (spriteW - brimW) / 2);
+    const by = Math.round(drawY + spriteH * 0.02);
+    const coneH = Math.round(spriteH * 0.34);
+    ctx.save();
+    ctx.fillStyle = '#5b3cc4';
+    ctx.beginPath();
+    ctx.moveTo(bx + brimW * 0.18, by);
+    ctx.lineTo(bx + brimW * 0.54, by - coneH);
+    ctx.lineTo(bx + brimW * 0.82, by);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#3b248a';
+    ctx.fillRect(bx, by - 1, brimW, brimH);
+    ctx.fillStyle = '#ffd24c';
+    ctx.fillRect(bx + brimW * 0.22, by - 4, brimW * 0.56, 3);
+    ctx.fillRect(bx + brimW * 0.46, by - coneH * 0.52, 4, 4);
+    ctx.restore();
+  } else if (accessoryId === 'acc_halo') {
+    const bob = Math.sin(time * 5) * 2.5;
+    const cx = drawX + spriteW * 0.5;
+    const cy = drawY - spriteH * 0.1 + bob;
+    ctx.save();
+    ctx.strokeStyle = '#ffd24c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, spriteW * 0.25, Math.max(4, spriteH * 0.07), 0, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.restore();
   }
 }

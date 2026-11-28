@@ -222,9 +222,11 @@ export class Game {
     const activePlayerBullets = this.bullets.filter((b) => b.isPlayer && b.alive).length;
 
     const maxBullets =
-      weapon === 'weapon_spread'
+      weapon === 'weapon_nova'
+        ? 15
+        : weapon === 'weapon_spread'
         ? 9
-        : weapon === 'weapon_twin'
+        : weapon === 'weapon_twin' || weapon === 'weapon_wave'
         ? 6
         : weapon === 'weapon_rapid'
         ? 5
@@ -234,11 +236,16 @@ export class Game {
       return false;
     }
 
-    const speed = weapon === 'weapon_rapid' ? 720 : CONFIG.BULLET_SPEED;
+    const speed =
+      weapon === 'weapon_laser'
+        ? 860
+        : weapon === 'weapon_rapid'
+        ? 720
+        : CONFIG.BULLET_SPEED;
     const vx = this.player.facing * speed;
 
     if (charged) {
-      const hyper = weapon === 'weapon_charge';
+      const hyper = weapon === 'weapon_charge' || weapon === 'weapon_nova';
       const bw = hyper ? 38 : 28;
       const bx = this.player.facing > 0 ? this.player.x + this.player.w : this.player.x - bw;
       const by = this.player.y + (hyper ? 12 : 14);
@@ -258,6 +265,34 @@ export class Game {
       this.bullets.push(new Bullet(bx, by, vx, 0, true, false));
       this.bullets.push(new Bullet(bx, by - 4, vx * 0.94, -155, true, false));
       this.bullets.push(new Bullet(bx, by + 4, vx * 0.94, 155, true, false));
+    } else if (weapon === 'weapon_laser') {
+      const lbx = this.player.facing > 0 ? this.player.x + this.player.w : this.player.x - 34;
+      this.bullets.push(
+        new Bullet(lbx, by, vx, 0, true, false, false, {
+          style: 'laser',
+          piercing: true,
+          damage: 2,
+        })
+      );
+    } else if (weapon === 'weapon_wave') {
+      this.bullets.push(
+        new Bullet(bx, by, vx * 0.9, 0, true, false, false, { style: 'wave', wavePhase: 0 })
+      );
+      this.bullets.push(
+        new Bullet(bx, by, vx * 0.9, 0, true, false, false, { style: 'wave', wavePhase: Math.PI })
+      );
+    } else if (weapon === 'weapon_bounce') {
+      this.bullets.push(
+        new Bullet(bx, by - 4, vx * 0.78, -220, true, false, false, {
+          style: 'bounce',
+          damage: 2,
+          life: 2.8,
+        })
+      );
+    } else if (weapon === 'weapon_nova') {
+      [-220, -110, 0, 110, 220].forEach((vy) => {
+        this.bullets.push(new Bullet(bx, by, vx * 0.95, vy, true, false));
+      });
     } else {
       this.bullets.push(new Bullet(bx, by, vx, 0, true, false));
     }
@@ -392,7 +427,7 @@ export class Game {
         if (!enemy.alive || b.hitIds.has(enemy.id)) continue;
         if (rectsOverlap(b, enemy)) {
           b.hitIds.add(enemy.id);
-          if (!b.charged) b.alive = false;
+          if (!b.piercing) b.alive = false;
 
           this.missionManager.onEnemyHit(enemy);
           const defeated = enemy.takeDamage(b.damage);
@@ -416,7 +451,7 @@ export class Game {
         if (!b.alive || !b.isPlayer || b.hitIds.has('boss')) continue;
         if (rectsOverlap(b, this.boss)) {
           b.hitIds.add('boss');
-          if (!b.charged) b.alive = false;
+          if (!b.piercing) b.alive = false;
 
           const defeated = this.boss.takeDamage(b.damage);
           this.spawnBurst(b.x, b.y, '#ffd24c', 6);

@@ -1,7 +1,7 @@
 // Shop catalog: Weapons (attack abilities) and Fashion (suit colors & accessories)
 
 export const SHOP_ITEMS = [
-  // --- Weapons ---
+  // --- Weapons (9 total) ---
   {
     id: 'weapon_normal',
     category: 'weapon',
@@ -57,8 +57,52 @@ export const SHOP_ITEMS = [
     badgeColor: '#9b5de5',
     icon: '💥',
   },
+  {
+    id: 'weapon_laser',
+    category: 'weapon',
+    slot: 'weapon',
+    name: 'Laser Beam',
+    jp: '敵を貫通する超高速レーザー！',
+    desc: 'Fast piercing beam (2 damage)!',
+    price: 40,
+    badgeColor: '#00bbf9',
+    icon: '🔦',
+  },
+  {
+    id: 'weapon_bounce',
+    category: 'weapon',
+    slot: 'weapon',
+    name: 'Bounce Shot',
+    jp: '地面をはねるバウンド弾！',
+    desc: 'Bouncing orbs (2 damage) along ground!',
+    price: 40,
+    badgeColor: '#38b000',
+    icon: '🟢',
+  },
+  {
+    id: 'weapon_wave',
+    category: 'weapon',
+    slot: 'weapon',
+    name: 'Wave Buster',
+    jp: '波のようにうねる2連プラズマ！',
+    desc: 'Dual wavy shots cover wide height!',
+    price: 45,
+    badgeColor: '#f15bb5',
+    icon: '〰',
+  },
+  {
+    id: 'weapon_nova',
+    category: 'weapon',
+    slot: 'weapon',
+    name: 'Mega Nova',
+    jp: '5方向ショット＋高速チャージの最強武器！',
+    desc: '5-way burst + fast Hyper Charge!',
+    price: 60,
+    badgeColor: '#f2b705',
+    icon: '🌟',
+  },
 
-  // --- Fashion: Suits ---
+  // --- Fashion: Suits (8 total) ---
   {
     id: 'suit_red',
     category: 'fashion',
@@ -82,6 +126,28 @@ export const SHOP_ITEMS = [
     icon: '👕',
   },
   {
+    id: 'suit_green',
+    category: 'fashion',
+    slot: 'suit',
+    name: 'Emerald Suit',
+    jp: '森のヒーロー風エメラルドグリーン',
+    desc: 'Bright emerald forest armor.',
+    price: 15,
+    badgeColor: '#2ec4b6',
+    icon: '🍃',
+  },
+  {
+    id: 'suit_pink',
+    category: 'fashion',
+    slot: 'suit',
+    name: 'Sakura Pink',
+    jp: 'かわいいサクラピンクのスーツ',
+    desc: 'Sweet sakura pink hero suit.',
+    price: 15,
+    badgeColor: '#ff70a6',
+    icon: '🌸',
+  },
+  {
     id: 'suit_ninja',
     category: 'fashion',
     slot: 'suit',
@@ -91,6 +157,17 @@ export const SHOP_ITEMS = [
     price: 20,
     badgeColor: '#2d3748',
     icon: '🥷',
+  },
+  {
+    id: 'suit_ice',
+    category: 'fashion',
+    slot: 'suit',
+    name: 'Ice Cyan',
+    jp: 'ひんやり輝くクリスタルブルー',
+    desc: 'Frosty crystal cyan armor.',
+    price: 25,
+    badgeColor: '#4cc9f0',
+    icon: '❄',
   },
   {
     id: 'suit_gold',
@@ -103,8 +180,19 @@ export const SHOP_ITEMS = [
     badgeColor: '#f2b705',
     icon: '✨',
   },
+  {
+    id: 'suit_galaxy',
+    category: 'fashion',
+    slot: 'suit',
+    name: 'Galaxy Purple',
+    jp: '宇宙カラーのパープル＆ゴールド',
+    desc: 'Cosmic purple star armor.',
+    price: 40,
+    badgeColor: '#7209b7',
+    icon: '🌌',
+  },
 
-  // --- Fashion: Accessories ---
+  // --- Fashion: Accessories (8 total) ---
   {
     id: 'acc_none',
     category: 'fashion',
@@ -128,6 +216,17 @@ export const SHOP_ITEMS = [
     icon: '🕶',
   },
   {
+    id: 'acc_cat_ears',
+    category: 'fashion',
+    slot: 'accessory',
+    name: 'Cat Ears',
+    jp: 'かわいいネコ耳ヘッドバンド',
+    desc: 'Cute kitty ears on your head!',
+    price: 15,
+    badgeColor: '#ff9ec7',
+    icon: '🐱',
+  },
+  {
     id: 'acc_cape',
     category: 'fashion',
     slot: 'accessory',
@@ -139,6 +238,28 @@ export const SHOP_ITEMS = [
     icon: '🦸',
   },
   {
+    id: 'acc_wizard_hat',
+    category: 'fashion',
+    slot: 'accessory',
+    name: 'Wizard Hat',
+    jp: '星付きの魔法使いハット',
+    desc: 'Magical starry wizard hat!',
+    price: 25,
+    badgeColor: '#5b3cc4',
+    icon: '🧙',
+  },
+  {
+    id: 'acc_halo',
+    category: 'fashion',
+    slot: 'accessory',
+    name: 'Golden Halo',
+    jp: '頭上に浮かぶ光るリング',
+    desc: 'Floating glowing golden halo!',
+    price: 30,
+    badgeColor: '#ffd166',
+    icon: '😇',
+  },
+  {
     id: 'acc_crown',
     category: 'fashion',
     slot: 'accessory',
@@ -148,6 +269,17 @@ export const SHOP_ITEMS = [
     price: 30,
     badgeColor: '#ffd24c',
     icon: '👑',
+  },
+  {
+    id: 'acc_wings',
+    category: 'fashion',
+    slot: 'accessory',
+    name: 'Angel Wings',
+    jp: '背中でパタパタ羽ばたく白い羽',
+    desc: 'Flapping white angel wings!',
+    price: 35,
+    badgeColor: '#90e0ef',
+    icon: '🪽',
   },
 ];
 
