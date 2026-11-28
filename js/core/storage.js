@@ -5,6 +5,13 @@ const DEFAULT_SAVE = {
   unlockedStages: ['forest-1'],
   clearedStages: [],
   highScores: {},
+  totalCoins: 0,
+  ownedItems: ['weapon_normal', 'suit_red', 'acc_none'],
+  equipped: {
+    weapon: 'weapon_normal',
+    suit: 'suit_red',
+    accessory: 'acc_none',
+  },
   settings: {
     voiceEnabled: true,
     voiceSpeed: 'normal',
@@ -24,6 +31,13 @@ export class StorageManager {
       return {
         ...structuredClone(DEFAULT_SAVE),
         ...parsed,
+        ownedItems: Array.from(
+          new Set([...DEFAULT_SAVE.ownedItems, ...(parsed.ownedItems || [])])
+        ),
+        equipped: {
+          ...DEFAULT_SAVE.equipped,
+          ...(parsed.equipped || {}),
+        },
         settings: {
           ...DEFAULT_SAVE.settings,
           ...(parsed.settings || {}),
@@ -58,6 +72,41 @@ export class StorageManager {
   updateSettings(partial) {
     this.data.settings = { ...this.data.settings, ...partial };
     this.save();
+  }
+
+  getTotalCoins() {
+    return this.data.totalCoins || 0;
+  }
+
+  addCoins(amount) {
+    if (!amount || amount <= 0) return;
+    this.data.totalCoins = (this.data.totalCoins || 0) + amount;
+    this.save();
+  }
+
+  isOwned(itemId) {
+    return this.data.ownedItems.includes(itemId);
+  }
+
+  getEquipped() {
+    return { ...this.data.equipped };
+  }
+
+  buyItem(itemId, price) {
+    if (this.isOwned(itemId)) return false;
+    if (this.getTotalCoins() < price) return false;
+    this.data.totalCoins -= price;
+    this.data.ownedItems.push(itemId);
+    this.save();
+    return true;
+  }
+
+  equipItem(slot, itemId) {
+    if (!this.isOwned(itemId)) return false;
+    if (!['weapon', 'suit', 'accessory'].includes(slot)) return false;
+    this.data.equipped[slot] = itemId;
+    this.save();
+    return true;
   }
 
   isUnlocked(stageId) {

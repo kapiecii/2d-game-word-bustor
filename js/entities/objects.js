@@ -2,16 +2,21 @@ import { CONFIG } from '../config.js';
 import { getCoinSprite, getKeySprite } from '../render/sprites.js';
 
 export class Bullet {
-  constructor(x, y, vx, vy, isPlayer = true, charged = false) {
+  constructor(x, y, vx, vy, isPlayer = true, charged = false, hyper = false) {
     this.x = x;
     this.y = y;
     this.vx = vx;
     this.vy = vy;
     this.isPlayer = isPlayer;
     this.charged = charged;
-    this.w = charged ? 28 : 12;
-    this.h = charged ? 18 : 8;
-    this.damage = charged ? CONFIG.CHARGE_BULLET_DAMAGE : CONFIG.NORMAL_BULLET_DAMAGE;
+    this.hyper = hyper;
+    this.w = hyper ? 38 : charged ? 28 : 12;
+    this.h = hyper ? 24 : charged ? 18 : 8;
+    this.damage = hyper
+      ? CONFIG.CHARGE_BULLET_DAMAGE + 1
+      : charged
+      ? CONFIG.CHARGE_BULLET_DAMAGE
+      : CONFIG.NORMAL_BULLET_DAMAGE;
     this.alive = true;
     this.life = 2.2;
     this.hitIds = new Set();

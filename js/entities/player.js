@@ -1,8 +1,8 @@
 import { CONFIG } from '../config.js';
-import { getPlayerSprite } from '../render/sprites.js';
+import { getPlayerSprite, drawPlayerCape, drawPlayerFrontAccessory } from '../render/sprites.js';
 
 export class Player {
-  constructor(x, y, charType = 'boy') {
+  constructor(x, y, charType = 'boy', equipped = {}) {
     this.x = x;
     this.y = y;
     this.w = CONFIG.PLAYER_WIDTH;
@@ -12,6 +12,11 @@ export class Player {
     this.facing = 1; // 1 = right, -1 = left
     this.onGround = false;
     this.charType = charType;
+    this.equipped = {
+      weapon: equipped.weapon || 'weapon_normal',
+      suit: equipped.suit || 'suit_red',
+      accessory: equipped.accessory || 'acc_none',
+    };
 
     this.lives = CONFIG.PLAYER_MAX_LIVES;
     this.invulnTimer = 0;
@@ -85,20 +90,25 @@ export class Player {
       this.chargeReadyPlayed = false;
     }
 
+    const chargeReadyTime =
+      this.equipped.weapon === 'weapon_charge'
+        ? CONFIG.CHARGE_READY_TIME * 0.55
+        : CONFIG.CHARGE_READY_TIME;
+
     if (this.isCharging && input.shootHeld) {
       this.chargeTime += dt;
       if (!this.chargeStartedSpoken && this.chargeTime >= CONFIG.CHARGE_START_TIME) {
         this.chargeStartedSpoken = true;
         callbacks.onActionVoice('Charge!', 'CHARGE!', this.x + this.w / 2, this.y - 14);
       }
-      if (!this.chargeReadyPlayed && this.chargeTime >= CONFIG.CHARGE_READY_TIME) {
+      if (!this.chargeReadyPlayed && this.chargeTime >= chargeReadyTime) {
         this.chargeReadyPlayed = true;
         callbacks.onChargeReady();
       }
     }
 
     if (this.isCharging && input.shootReleased) {
-      const isCharged = this.chargeTime >= CONFIG.CHARGE_READY_TIME;
+      const isCharged = this.chargeTime >= chargeReadyTime;
       this.isCharging = false;
       this.chargeTime = 0;
       this.chargeStartedSpoken = false;
@@ -132,9 +142,14 @@ export class Player {
     const sx = Math.floor(this.x - cameraX);
     const sy = Math.floor(this.y);
 
+    const chargeReadyTime =
+      this.equipped.weapon === 'weapon_charge'
+        ? CONFIG.CHARGE_READY_TIME * 0.55
+        : CONFIG.CHARGE_READY_TIME;
+
     // Charge aura
     if (this.isCharging && this.chargeTime >= CONFIG.CHARGE_START_TIME) {
-      const ready = this.chargeTime >= CONFIG.CHARGE_READY_TIME;
+      const ready = this.chargeTime >= chargeReadyTime;
       const pulse = 22 + Math.sin(time * 24) * 4;
       ctx.save();
       ctx.strokeStyle = ready ? '#ffd24c' : '#4cc9f0';
@@ -153,9 +168,12 @@ export class Player {
       state = 'run';
     }
 
-    const sprite = getPlayerSprite(this.charType, state, this.facing < 0, 2);
+    const sprite = getPlayerSprite(this.charType, state, this.facing < 0, 2, this.equipped.suit);
     const drawX = sx + Math.floor((this.w - sprite.width) / 2);
     const drawY = sy + this.h - sprite.height;
+
+    drawPlayerCape(ctx, this.equipped.accessory, drawX, drawY, sprite.width, sprite.height, this.facing, time);
     ctx.drawImage(sprite, drawX, drawY);
+    drawPlayerFrontAccessory(ctx, this.equipped.accessory, drawX, drawY, sprite.width, sprite.height, this.facing);
   }
 }

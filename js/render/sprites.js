@@ -246,13 +246,88 @@ const GIRL_JUMP = [
   '........................',
 ];
 
-export function getPlayerSprite(charType, state, flipX = false, scale = 2) {
+const SUIT_OVERRIDES = {
+  suit_red: { R: '#e63946', D: '#9e1c28', H: '#ff7582' },
+  suit_blue: { R: '#2f80ed', D: '#1b498a', H: '#7cc0ff' },
+  suit_ninja: { R: '#2d3748', D: '#141923', H: '#ffd166' },
+  suit_gold: { R: '#f2b705', D: '#b57b00', H: '#fff08a' },
+};
+
+export function getPlayerSprite(charType, state, flipX = false, scale = 2, suitId = 'suit_red') {
   const isGirl = charType === 'girl';
   let grid;
   if (state === 'jump') grid = isGirl ? GIRL_JUMP : BOY_JUMP;
   else if (state === 'run') grid = isGirl ? GIRL_RUN1 : BOY_RUN1;
   else grid = isGirl ? GIRL_IDLE : BOY_IDLE;
-  return getSprite(`player_hd_${charType}_${state}`, grid, HERO_PALETTE, scale, flipX);
+
+  const overrides = SUIT_OVERRIDES[suitId] || SUIT_OVERRIDES.suit_red;
+  const palette = { ...HERO_PALETTE, ...overrides };
+  return getSprite(`player_hd_${charType}_${state}_${suitId}`, grid, palette, scale, flipX);
+}
+
+export function drawPlayerCape(ctx, accessoryId, drawX, drawY, spriteW, spriteH, facing = 1, time = 0) {
+  if (accessoryId !== 'acc_cape') return;
+  const wave = Math.sin(time * 9) * 3;
+  const backX = facing > 0 ? drawX + spriteW * 0.28 : drawX + spriteW * 0.72;
+  const topY = drawY + spriteH * 0.44;
+  const tailX = backX - facing * (spriteW * 0.42);
+  const bottomY = drawY + spriteH * 0.88 + wave;
+
+  ctx.save();
+  ctx.fillStyle = '#e63946';
+  ctx.beginPath();
+  ctx.moveTo(backX, topY);
+  ctx.lineTo(tailX, topY + 6 + wave * 0.5);
+  ctx.lineTo(tailX - facing * 4, bottomY);
+  ctx.lineTo(backX - facing * 4, bottomY - 4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = '#ffd24c';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+}
+
+export function drawPlayerFrontAccessory(ctx, accessoryId, drawX, drawY, spriteW, spriteH, facing = 1) {
+  if (accessoryId === 'acc_crown') {
+    const cw = Math.round(spriteW * 0.44);
+    const ch = Math.round(spriteH * 0.2);
+    const cx = Math.round(drawX + (spriteW - cw) / 2);
+    const cy = Math.round(drawY - ch + spriteH * 0.08);
+    ctx.save();
+    ctx.fillStyle = '#ffd24c';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + ch);
+    ctx.lineTo(cx, cy + 2);
+    ctx.lineTo(cx + cw * 0.28, cy + ch * 0.52);
+    ctx.lineTo(cx + cw * 0.5, cy);
+    ctx.lineTo(cx + cw * 0.72, cy + ch * 0.52);
+    ctx.lineTo(cx + cw, cy + 2);
+    ctx.lineTo(cx + cw, cy + ch);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#b57b00';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#f24b59';
+    ctx.fillRect(cx + cw * 0.44, cy + ch * 0.58, Math.max(3, cw * 0.14), Math.max(3, ch * 0.28));
+    ctx.restore();
+  } else if (accessoryId === 'acc_sunglasses') {
+    const gw = Math.round(spriteW * 0.36);
+    const gh = Math.max(5, Math.round(spriteH * 0.1));
+    const gx = facing > 0
+      ? Math.round(drawX + spriteW * 0.34)
+      : Math.round(drawX + spriteW * 0.30);
+    const gy = Math.round(drawY + spriteH * 0.28);
+    ctx.save();
+    ctx.fillStyle = '#111626';
+    ctx.fillRect(gx, gy, gw, gh);
+    ctx.fillStyle = '#4cc9f0';
+    ctx.fillRect(gx + 2, gy + 1, Math.max(3, gw * 0.28), Math.max(2, gh * 0.45));
+    ctx.fillRect(gx + Math.round(gw * 0.56), gy + 1, Math.max(3, gw * 0.28), Math.max(2, gh * 0.45));
+    ctx.restore();
+  }
 }
 
 // --- Buddy (White + Orange Mini-Drone Navigator, 18x16 HD) ---

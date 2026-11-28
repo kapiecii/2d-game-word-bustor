@@ -50,14 +50,19 @@ export class Game {
     this.bossArenaLocked = false;
   }
 
-  startStage(stageData, charType, highScore = 0) {
+  startStage(stageData, charType, highScore = 0, equipped = {}) {
     this.stop();
     this.resetRuntimeState();
 
     this.stage = stageData;
     this.highScore = highScore;
 
-    this.player = new Player(stageData.startX || 60, CONFIG.GROUND_Y - CONFIG.PLAYER_HEIGHT, charType);
+    this.player = new Player(
+      stageData.startX || 60,
+      CONFIG.GROUND_Y - CONFIG.PLAYER_HEIGHT,
+      charType,
+      equipped
+    );
     this.buddy = new Buddy(this.player.x - 42, this.player.y - 36);
     this.objects = (stageData.objects || []).map((o) => ({ ...o }));
     this.enemies = (stageData.enemies || []).map((e) => new Enemy(e));
@@ -213,21 +218,49 @@ export class Game {
   }
 
   spawnPlayerBullet(charged) {
+    const weapon = this.player.equipped.weapon;
     const activePlayerBullets = this.bullets.filter((b) => b.isPlayer && b.alive).length;
-    if (!charged && activePlayerBullets >= CONFIG.MAX_PLAYER_BULLETS) {
+
+    const maxBullets =
+      weapon === 'weapon_spread'
+        ? 9
+        : weapon === 'weapon_twin'
+        ? 6
+        : weapon === 'weapon_rapid'
+        ? 5
+        : CONFIG.MAX_PLAYER_BULLETS;
+
+    if (!charged && activePlayerBullets >= maxBullets) {
       return false;
     }
 
-    const bx = this.player.facing > 0 ? this.player.x + this.player.w : this.player.x - (charged ? 28 : 12);
-    const by = this.player.y + (charged ? 14 : 20);
-    const vx = this.player.facing * CONFIG.BULLET_SPEED;
+    const speed = weapon === 'weapon_rapid' ? 720 : CONFIG.BULLET_SPEED;
+    const vx = this.player.facing * speed;
 
-    this.bullets.push(new Bullet(bx, by, vx, 0, true, charged));
     if (charged) {
+      const hyper = weapon === 'weapon_charge';
+      const bw = hyper ? 38 : 28;
+      const bx = this.player.facing > 0 ? this.player.x + this.player.w : this.player.x - bw;
+      const by = this.player.y + (hyper ? 12 : 14);
+      this.bullets.push(new Bullet(bx, by, vx, 0, true, true, hyper));
       this.audio.chargeShot();
-    } else {
-      this.audio.shoot();
+      return true;
     }
+
+    const bx = this.player.facing > 0 ? this.player.x + this.player.w : this.player.x - 12;
+    const by = this.player.y + 20;
+
+    if (weapon === 'weapon_twin') {
+      this.bullets.push(new Bullet(bx, by - 7, vx, 0, true, false));
+      this.bullets.push(new Bullet(bx, by + 7, vx, 0, true, false));
+    } else if (weapon === 'weapon_spread') {
+      this.bullets.push(new Bullet(bx, by, vx, 0, true, false));
+      this.bullets.push(new Bullet(bx, by - 4, vx * 0.94, -155, true, false));
+      this.bullets.push(new Bullet(bx, by + 4, vx * 0.94, 155, true, false));
+    } else {
+      this.bullets.push(new Bullet(bx, by, vx, 0, true, false));
+    }
+    this.audio.shoot();
     return true;
   }
 

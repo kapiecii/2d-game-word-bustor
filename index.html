@@ -118,9 +118,52 @@
                 <h2 class="panel-title">STAGE SELECT</h2>
                 <p class="panel-sub">Clear each stage to unlock the next!</p>
               </div>
-              <button id="btn-back-title" class="secondary-btn" type="button">← Title</button>
+              <div class="header-actions">
+                <div class="wallet-pill" title="Total Coins">
+                  <span class="coin-dot"></span>
+                  <span id="stages-wallet">0</span>
+                </div>
+                <button id="btn-open-shop" class="primary-btn shop-open-btn" type="button">🛒 SHOP</button>
+                <button id="btn-back-title" class="secondary-btn" type="button">← Title</button>
+              </div>
             </div>
             <div id="worlds-grid" class="worlds-grid"></div>
+          </div>
+        </div>
+
+        <!-- Hero Shop Overlay -->
+        <div id="screen-shop" class="overlay-screen hidden">
+          <div class="panel shop-panel">
+            <div class="stages-header">
+              <div>
+                <h2 class="panel-title">HERO SHOP</h2>
+                <p class="panel-sub">Use your coins to unlock cool Weapons &amp; Fashion!</p>
+              </div>
+              <div class="header-actions">
+                <div class="wallet-pill" title="Total Coins">
+                  <span class="coin-dot"></span>
+                  <span id="shop-wallet">0</span>
+                </div>
+                <button id="btn-shop-back" class="secondary-btn" type="button">← Stages</button>
+              </div>
+            </div>
+
+            <div class="shop-body">
+              <div class="shop-preview-col">
+                <div class="shop-preview-box">
+                  <canvas id="shop-hero-preview" width="128" height="148"></canvas>
+                </div>
+                <div id="shop-equipped-summary" class="shop-equipped-summary"></div>
+              </div>
+
+              <div class="shop-items-col">
+                <div class="shop-tabs">
+                  <button id="tab-weapons" class="shop-tab active" data-tab="weapon" type="button">⚡ Weapons</button>
+                  <button id="tab-fashion" class="shop-tab" data-tab="fashion" type="button">👑 Fashion</button>
+                </div>
+                <div id="shop-items-grid" class="shop-items-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -12,11 +12,12 @@ const speech = new SpeechManager(storage.getSettings());
 const input = new InputManager();
 
 let currentStageId = null;
-let screenState = 'title'; // 'title' | 'stages' | 'play' | 'pause' | 'clear'
+let screenState = 'title'; // 'title' | 'stages' | 'shop' | 'play' | 'pause' | 'clear'
 
 const hud = new HudController({
   onSelectChar(char) {
     storage.setCharacter(char);
+    hud.selectCharCard(char, storage.getEquipped());
     audio.coin();
   },
   onOpenStageSelect() {
@@ -24,6 +25,32 @@ const hud = new HudController({
     screenState = 'stages';
     hud.renderWorldSelect(WORLDS, storage);
     hud.showScreen('stages');
+  },
+  onOpenShop() {
+    game.stop();
+    screenState = 'shop';
+    hud.renderShop(storage);
+    hud.showScreen('shop');
+  },
+  onShopTabChange() {
+    hud.renderShop(storage);
+  },
+  onBuyItem(item) {
+    if (storage.buyItem(item.id, item.price)) {
+      storage.equipItem(item.slot, item.id);
+      audio.missionSuccess();
+      speech.speak(`Nice choice! ${item.name}!`, 3);
+      hud.selectCharCard(storage.getCharacter(), storage.getEquipped());
+      hud.renderShop(storage);
+    }
+  },
+  onEquipItem(item) {
+    if (storage.equipItem(item.slot, item.id)) {
+      audio.coin();
+      speech.speak(item.name, 2);
+      hud.selectCharCard(storage.getCharacter(), storage.getEquipped());
+      hud.renderShop(storage);
+    }
   },
   onBackToTitle() {
     game.stop();
@@ -74,6 +101,8 @@ const game = new Game({
   hud,
   onPauseToggle: () => togglePause(),
   onStageClear: ({ stageId, stageName, score, elapsed, coins }) => {
+    const earnedCoins = coins + 3; // Stage coins + 3 clear bonus coins
+    storage.addCoins(earnedCoins);
     const nextStageId = getNextPlayableStageId(stageId);
     const newlyUnlocked = storage.recordStageClear(stageId, score, nextStageId);
     const highScore = storage.getHighScore(stageId);
@@ -83,7 +112,7 @@ const game = new Game({
       score,
       highScore,
       elapsed,
-      coins,
+      coins: earnedCoins,
       praise: 'Awesome!',
       nextStageId,
       newlyUnlocked,
@@ -100,10 +129,11 @@ function launchStage(stageId) {
   }
   currentStageId = stageId;
   screenState = 'play';
-  hud.selectCharCard(storage.getCharacter());
+  const equipped = storage.getEquipped();
+  hud.selectCharCard(storage.getCharacter(), equipped);
   hud.showScreen('play');
   audio.ensureContext();
-  game.startStage(stageData, storage.getCharacter(), storage.getHighScore(stageId));
+  game.startStage(stageData, storage.getCharacter(), storage.getHighScore(stageId), equipped);
 }
 
 function togglePause() {
@@ -119,6 +149,6 @@ function togglePause() {
 }
 
 // Initial setup
-hud.selectCharCard(storage.getCharacter());
+hud.selectCharCard(storage.getCharacter(), storage.getEquipped());
 hud.syncSettingsUI(storage.getSettings());
 hud.showScreen('title');

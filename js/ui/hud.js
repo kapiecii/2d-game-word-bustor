@@ -1,8 +1,15 @@
-import { getPlayerSprite, getBuddySprite } from '../render/sprites.js';
+import {
+  getPlayerSprite,
+  getBuddySprite,
+  drawPlayerCape,
+  drawPlayerFrontAccessory,
+} from '../render/sprites.js';
+import { SHOP_ITEMS, getShopItem } from '../data/shop.js';
 
 export class HudController {
   constructor(handlers) {
     this.handlers = handlers;
+    this.activeShopTab = 'weapon';
 
     // HUD elements
     this.hudEl = document.getElementById('hud');
@@ -29,8 +36,16 @@ export class HudController {
     // Screens & Modals
     this.screenTitle = document.getElementById('screen-title');
     this.screenStages = document.getElementById('screen-stages');
+    this.screenShop = document.getElementById('screen-shop');
     this.modalSettings = document.getElementById('modal-settings');
     this.screenClear = document.getElementById('screen-clear');
+
+    // Wallet & Shop
+    this.stagesWalletEl = document.getElementById('stages-wallet');
+    this.shopWalletEl = document.getElementById('shop-wallet');
+    this.shopPreviewCanvas = document.getElementById('shop-hero-preview');
+    this.shopEquippedSummaryEl = document.getElementById('shop-equipped-summary');
+    this.shopItemsGridEl = document.getElementById('shop-items-grid');
 
     // Settings controls
     this.btnSpeedSlow = document.getElementById('btn-speed-slow');
@@ -69,6 +84,24 @@ export class HudController {
 
     document.getElementById('btn-back-title').addEventListener('click', () => {
       this.handlers.onBackToTitle();
+    });
+
+    document.getElementById('btn-open-shop').addEventListener('click', () => {
+      this.handlers.onOpenShop();
+    });
+
+    document.getElementById('btn-shop-back').addEventListener('click', () => {
+      this.handlers.onOpenStageSelect();
+    });
+
+    document.querySelectorAll('.shop-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        this.activeShopTab = tab.dataset.tab;
+        document.querySelectorAll('.shop-tab').forEach((t) => {
+          t.classList.toggle('active', t.dataset.tab === this.activeShopTab);
+        });
+        this.handlers.onShopTabChange();
+      });
     });
 
     this.btnSettings.addEventListener('click', () => this.handlers.onTogglePause());
@@ -110,11 +143,12 @@ export class HudController {
     ctx.drawImage(sprite, dx, dy, dw, dh);
   }
 
-  selectCharCard(charType) {
+  selectCharCard(charType, equipped = {}) {
     document.querySelectorAll('.char-card').forEach((card) => {
       card.classList.toggle('selected', card.dataset.char === charType);
     });
-    this.drawToCanvas(this.playerIconCanvas, getPlayerSprite(charType, 'idle', false, 1));
+    const suit = equipped.suit || 'suit_red';
+    this.drawToCanvas(this.playerIconCanvas, getPlayerSprite(charType, 'idle', false, 1, suit));
   }
 
   syncSettingsUI(settings) {
@@ -127,6 +161,7 @@ export class HudController {
   showScreen(name) {
     this.screenTitle.classList.toggle('hidden', name !== 'title');
     this.screenStages.classList.toggle('hidden', name !== 'stages');
+    this.screenShop.classList.toggle('hidden', name !== 'shop');
     this.screenClear.classList.toggle('hidden', name !== 'clear');
     this.modalSettings.classList.toggle('hidden', name !== 'pause');
 
@@ -138,6 +173,7 @@ export class HudController {
   }
 
   renderWorldSelect(worlds, storage) {
+    this.stagesWalletEl.textContent = String(storage.getTotalCoins());
     const grid = document.getElementById('worlds-grid');
     grid.innerHTML = '';
 
@@ -255,6 +291,80 @@ export class HudController {
 
     this.btnNextStage.classList.toggle('hidden', !nextStageId);
     this.showScreen('clear');
+  }
+
+  renderShop(storage) {
+    const totalCoins = storage.getTotalCoins();
+    const equipped = storage.getEquipped();
+    const charType = storage.getCharacter();
+
+    this.shopWalletEl.textContent = String(totalCoins);
+    this.stagesWalletEl.textContent = String(totalCoins);
+
+    // Draw live hero preview with equipped Suit + Accessory
+    const ctx = this.shopPreviewCanvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, this.shopPreviewCanvas.width, this.shopPreviewCanvas.height);
+
+    const sprite = getPlayerSprite(charType, 'idle', false, 4, equipped.suit);
+    const drawX = Math.floor((this.shopPreviewCanvas.width - sprite.width) / 2);
+    const drawY = Math.floor((this.shopPreviewCanvas.height - sprite.height) / 2) + 8;
+
+    drawPlayerCape(ctx, equipped.accessory, drawX, drawY, sprite.width, sprite.height, 1, 0);
+    ctx.drawImage(sprite, drawX, drawY);
+    drawPlayerFrontAccessory(ctx, equipped.accessory, drawX, drawY, sprite.width, sprite.height, 1);
+
+    const eqWeapon = getShopItem(equipped.weapon)?.name || 'Normal Buster';
+    const eqSuit = getShopItem(equipped.suit)?.name || 'Red Suit';
+    const eqAcc = getShopItem(equipped.accessory)?.name || 'None';
+    this.shopEquippedSummaryEl.innerHTML = `
+      <div>Weapon: <strong>${eqWeapon}</strong></div>
+      <div>Suit: <strong>${eqSuit}</strong></div>
+      <div>Item: <strong>${eqAcc}</strong></div>
+    `;
+
+    // Render items for active tab
+    const items = SHOP_ITEMS.filter((it) => it.category === this.activeShopTab);
+    this.shopItemsGridEl.innerHTML = '';
+
+    for (const item of items) {
+      const owned = storage.isOwned(item.id);
+      const isEquipped = equipped[item.slot] === item.id;
+      const canAfford = totalCoins >= item.price;
+
+      const card = document.createElement('div');
+      card.className = `shop-card ${isEquipped ? 'equipped' : ''}`;
+      card.innerHTML = `
+        <div class="shop-card-top">
+          <div class="shop-item-badge" style="background:${item.badgeColor}">${item.icon}</div>
+          <div>
+            <div class="shop-item-title">${item.name}</div>
+            <div class="shop-item-jp">${item.jp}</div>
+          </div>
+        </div>
+        <div class="shop-item-desc">${item.desc}</div>
+      `;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      if (isEquipped) {
+        btn.className = 'shop-action-btn equipped';
+        btn.textContent = '✓ Equipped';
+        btn.disabled = true;
+      } else if (owned) {
+        btn.className = 'shop-action-btn';
+        btn.textContent = 'Equip';
+        btn.addEventListener('click', () => this.handlers.onEquipItem(item));
+      } else {
+        btn.className = 'shop-action-btn buy';
+        btn.textContent = `Buy (🪙 ${item.price})`;
+        btn.disabled = !canAfford;
+        btn.addEventListener('click', () => this.handlers.onBuyItem(item));
+      }
+
+      card.appendChild(btn);
+      this.shopItemsGridEl.appendChild(card);
+    }
   }
 }
 
