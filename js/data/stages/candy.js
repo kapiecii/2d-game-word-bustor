@@ -23,10 +23,10 @@ export const CANDY_STAGES = {
       { id: 'c1_sh_t', type: 'shape_target', shape: 'triangle', color: 'yellow', x: 1220, y: G - 62, w: 46, h: 46 },
       { id: 'cgate2', type: 'gate', x: 1400, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 3: Get the yellow star!
-      { id: 'cstar_r', type: 'star', color: 'red', x: 1620, y: G - 48, w: 30, h: 30 },
-      { id: 'cstar_y', type: 'star', color: 'yellow', x: 1820, y: G - 115, w: 30, h: 30 },
-      { id: 'cstar_b', type: 'star', color: 'blue', x: 2020, y: G - 48, w: 30, h: 30 },
+      // Area 3: Shoot the cake! (Picture-word matching)
+      { id: 'c1_w1', type: 'word_target', word: 'donut', icon: '🍩', x: 1620, y: G - 62, w: 48, h: 48 },
+      { id: 'c1_w2', type: 'word_target', word: 'cake', icon: '🍰', x: 1820, y: G - 124, w: 48, h: 48 },
+      { id: 'c1_w3', type: 'word_target', word: 'ice cream', icon: '🍦', x: 2020, y: G - 62, w: 48, h: 48 },
       { id: 'cgate3', type: 'gate', x: 2280, y: G - 130, w: 34, h: 130, open: false },
 
       // Goal
@@ -60,13 +60,13 @@ export const CANDY_STAGES = {
         gateId: 'cgate2',
       },
       {
-        id: 'mc1_star',
+        id: 'mc1_cake',
         triggerX: 1450,
         checkpointX: 1470,
-        type: 'collect_star',
-        targetColor: 'yellow',
-        text: 'Get the yellow star!',
-        jp: '黄色いスター（YELLOW STAR）を取ろう！',
+        type: 'shoot_word_target',
+        targetWord: 'cake',
+        text: 'Shoot the cake!',
+        jp: 'ケーキ（🍰）の的を撃とう！',
         timeLimit: 25,
         gateId: 'cgate3',
       },
@@ -117,15 +117,14 @@ export const CANDY_STAGES = {
         gateId: 'cgate2_1',
       },
       {
-        id: 'mc2_seq',
+        id: 'mc2_shoot5',
         triggerX: 950,
         checkpointX: 970,
-        type: 'sequence',
-        subType: 'shoot_switches',
-        steps: ['red', 'green'],
-        text: 'Shoot red, then green!',
-        jp: 'まず赤（RED）、つぎに緑（GREEN）を撃とう！',
-        timeLimit: 30,
+        type: 'shoot_count',
+        targetCount: 5,
+        text: 'Shoot 5 times!',
+        jp: '5回ショットを撃とう！',
+        timeLimit: 20,
         gateId: 'cgate2_2',
       },
       {
@@ -150,8 +149,10 @@ export const CANDY_STAGES = {
     width: 3150,
     startX: 60,
     objects: [
-      // Area 1: Break the ice!
-      { id: 'c2b_ice', type: 'ice', x: 460, y: G - 78, w: 66, h: 78, broken: false },
+      // Area 1: Spell FUN!
+      { id: 'c2b_lf', type: 'letter_target', letter: 'F', resetOnFail: true, x: 260, y: G - 62, w: 44, h: 44 },
+      { id: 'c2b_lu', type: 'letter_target', letter: 'U', resetOnFail: true, x: 420, y: G - 122, w: 44, h: 44 },
+      { id: 'c2b_ln', type: 'letter_target', letter: 'N', resetOnFail: true, x: 580, y: G - 62, w: 44, h: 44 },
       { id: 'c2b_gate1', type: 'gate', x: 740, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Stop the laser!
@@ -173,13 +174,15 @@ export const CANDY_STAGES = {
     ],
     missions: [
       {
-        id: 'mc2b_ice',
+        id: 'mc2b_fun',
         triggerX: 40,
         checkpointX: 60,
-        type: 'break_object',
-        targetId: 'c2b_ice',
-        text: 'Break the ice!',
-        jp: 'チャージショットで氷（ICE）をこわそう！',
+        type: 'sequence',
+        subType: 'shoot_letters',
+        steps: ['F', 'U', 'N'],
+        text: 'Spell FUN!',
+        spokenText: 'Spell fun! F, U, N!',
+        jp: 'F → U → N の順番に撃って FUN を作ろう！',
         timeLimit: 30,
         gateId: 'c2b_gate1',
       },

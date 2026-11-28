@@ -22,8 +22,10 @@ export const DESERT_STAGES = {
       { id: 'dstar_yellow', type: 'star', color: 'yellow', x: 1260, y: G - 48, w: 30, h: 30 },
       { id: 'dgate2', type: 'gate', x: 1460, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 3: Don't move! (Freeze for 3 seconds)
-      { id: 'dc3', type: 'coin', x: 1660, y: G - 54, w: 24, h: 24 },
+      // Area 3: Spell SUN!
+      { id: 'd1_ls', type: 'letter_target', letter: 'S', resetOnFail: true, x: 1580, y: G - 62, w: 44, h: 44 },
+      { id: 'd1_lu', type: 'letter_target', letter: 'U', resetOnFail: true, x: 1710, y: G - 122, w: 44, h: 44 },
+      { id: 'd1_ln', type: 'letter_target', letter: 'N', resetOnFail: true, x: 1840, y: G - 62, w: 44, h: 44 },
       { id: 'dgate3', type: 'gate', x: 1960, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 4: Shoot the green switch!
@@ -61,14 +63,16 @@ export const DESERT_STAGES = {
         gateId: 'dgate2',
       },
       {
-        id: 'md1_freeze',
+        id: 'md1_sun',
         triggerX: 1520,
         checkpointX: 1540,
-        type: 'dont_move',
-        holdSeconds: 3,
-        text: "Don't move!",
-        jp: '3びょう間じっと止まろう！',
-        timeLimit: 20,
+        type: 'sequence',
+        subType: 'shoot_letters',
+        steps: ['S', 'U', 'N'],
+        text: 'Spell SUN!',
+        spokenText: 'Spell sun! S, U, N!',
+        jp: 'S → U → N の順番に撃って SUN を作ろう！',
+        timeLimit: 30,
         gateId: 'dgate3',
       },
       {
@@ -128,15 +132,14 @@ export const DESERT_STAGES = {
         gateId: 'dgate2_1',
       },
       {
-        id: 'md2_seq_jump',
+        id: 'md2_jshoot',
         triggerX: 750,
         checkpointX: 770,
-        type: 'sequence',
-        subType: 'jump_objects',
-        steps: ['dbox2_1', 'dtree2_1'],
-        text: 'Jump on the box, then the tree!',
-        jp: 'まず箱（BOX）に乗って、つぎに木（TREE）に乗ろう！',
-        timeLimit: 30,
+        type: 'jump_shoot',
+        targetCount: 3,
+        text: 'Jump and shoot 3 times!',
+        jp: 'ジャンプしながら3回撃とう！',
+        timeLimit: 25,
         gateId: 'dgate2_2',
       },
       {

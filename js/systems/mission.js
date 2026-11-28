@@ -65,9 +65,10 @@ export class MissionManager {
   }
 
   replayVoice() {
-    const disp = this.currentDisplay;
-    if (disp) {
-      this.callbacks.onSpeak(disp.text, 3);
+    if (this.bossBanner) {
+      this.callbacks.onSpeak(this.bossBanner.text, 3);
+    } else if (this.activeMission) {
+      this.callbacks.onSpeak(this.activeMission.spokenText || this.activeMission.text, 3);
     }
   }
 
@@ -183,7 +184,7 @@ export class MissionManager {
     if (this.callbacks.onMissionStart) {
       this.callbacks.onMissionStart(m);
     }
-    this.callbacks.onSpeak(m.text, 3);
+    this.callbacks.onSpeak(m.spokenText || m.text, 3);
   }
 
   onPlayerJump() {
@@ -198,13 +199,67 @@ export class MissionManager {
     }
   }
 
-  onPlayerShoot(charged) {
-    if (!this.activeMission || this.activeMission.type !== 'use_charge_shot') return;
-    if (!charged) return;
-    this.activeMission.progress += 1;
-    if (this.activeMission.progress >= (this.activeMission.targetCount || 1)) {
-      this.completeActiveMission();
+  onPlayerShoot(charged, airborne = false) {
+    if (!this.activeMission) return;
+    const m = this.activeMission;
+    if (m.type === 'use_charge_shot') {
+      if (!charged) return;
+      m.progress += 1;
+      if (m.progress >= (m.targetCount || 1)) {
+        this.completeActiveMission();
+      }
+    } else if (m.type === 'shoot_count') {
+      m.progress += 1;
+      if (m.progress >= (m.targetCount || 5)) {
+        this.completeActiveMission();
+      }
+    } else if (m.type === 'jump_shoot') {
+      if (!airborne) return;
+      m.progress += 1;
+      if (m.progress >= (m.targetCount || 3)) {
+        this.completeActiveMission();
+      }
     }
+  }
+
+  onLetterHit(letterObj) {
+    if (!this.activeMission) return false;
+    const m = this.activeMission;
+    if (m.type === 'shoot_letter') {
+      if (letterObj.letter === m.targetLetter) {
+        letterObj.activated = true;
+        this.completeActiveMission();
+        return true;
+      }
+      this.triggerFail('Wrong letter!');
+      return false;
+    }
+    if (m.type === 'sequence' && m.subType === 'shoot_letters') {
+      const expected = m.steps[m.stepIndex];
+      if (letterObj.letter === expected) {
+        letterObj.activated = true;
+        m.stepIndex += 1;
+        if (m.stepIndex >= m.steps.length) {
+          this.completeActiveMission();
+        }
+        return true;
+      }
+      m.stepIndex = 0;
+      this.triggerFail('Wrong order!');
+      return false;
+    }
+    return false;
+  }
+
+  onWordTargetHit(wordObj) {
+    if (!this.activeMission || this.activeMission.type !== 'shoot_word_target') return false;
+    if (wordObj.word === this.activeMission.targetWord) {
+      wordObj.activated = true;
+      this.completeActiveMission();
+      return true;
+    }
+    this.triggerFail('Wrong picture!');
+    return false;
   }
 
   onShapeHit(shapeObj) {

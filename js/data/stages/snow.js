@@ -17,9 +17,10 @@ export const SNOW_STAGES = {
       { id: 'sc2', type: 'coin', x: 548, y: G - 165, w: 24, h: 24 },
       { id: 'sgate1', type: 'gate', x: 760, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 2: Shoot 2 bats!
-      { id: 'stree2', type: 'tree', x: 960, y: G - 105, w: 120, h: 26 },
-      { id: 'sc3', type: 'coin', x: 1008, y: G - 148, w: 24, h: 24 },
+      // Area 2: What is 2 + 4?
+      { id: 's1_n5', type: 'number_target', num: 5, x: 960, y: G - 62, w: 44, h: 44 },
+      { id: 's1_n6', type: 'number_target', num: 6, x: 1140, y: G - 122, w: 44, h: 44 },
+      { id: 's1_n7', type: 'number_target', num: 7, x: 1320, y: G - 62, w: 44, h: 44 },
       { id: 'sgate2', type: 'gate', x: 1560, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 3: Break the ice! (Charge Shot)
@@ -50,15 +51,15 @@ export const SNOW_STAGES = {
         gateId: 'sgate1',
       },
       {
-        id: 'ms1_bats',
+        id: 'ms1_math',
         triggerX: 810,
         checkpointX: 830,
-        type: 'defeat_enemy_type',
-        targetType: 'bat',
-        targetCount: 2,
-        text: 'Shoot 2 bats!',
-        jp: 'コウモリを2ひき撃とう！',
-        timeLimit: 30,
+        type: 'shoot_number',
+        targetNum: 6,
+        text: 'What is 2 + 4?',
+        spokenText: 'What is two plus four?',
+        jp: '2 たす 4 はいくつ？ 正しい数字を撃とう！',
+        timeLimit: 25,
         gateId: 'sgate2',
       },
       {
@@ -82,9 +83,10 @@ export const SNOW_STAGES = {
     width: 3000,
     startX: 60,
     objects: [
-      // Area 1: Shoot the robot!
-      { id: 'sc2_1', type: 'coin', x: 260, y: G - 56, w: 24, h: 24 },
-      { id: 'sbox2_1', type: 'box', x: 380, y: G - 48, w: 48, h: 48 },
+      // Area 1: Shoot the star! (Picture-word matching)
+      { id: 's2_w1', type: 'word_target', word: 'moon', icon: '🌙', x: 300, y: G - 62, w: 48, h: 48 },
+      { id: 's2_w2', type: 'word_target', word: 'star', icon: '⭐', x: 460, y: G - 124, w: 48, h: 48 },
+      { id: 's2_w3', type: 'word_target', word: 'cloud', icon: '☁', x: 620, y: G - 62, w: 48, h: 48 },
       { id: 'sgate2_1', type: 'gate', x: 820, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Get the coin under the tree!
@@ -107,14 +109,13 @@ export const SNOW_STAGES = {
     ],
     missions: [
       {
-        id: 'ms2_robot',
+        id: 'ms2_star_pic',
         triggerX: 40,
         checkpointX: 60,
-        type: 'defeat_enemy_type',
-        targetType: 'robot',
-        targetCount: 1,
-        text: 'Shoot the robot!',
-        jp: 'ロボットを撃って倒そう！',
+        type: 'shoot_word_target',
+        targetWord: 'star',
+        text: 'Shoot the star!',
+        jp: '星（⭐）の的を撃とう！',
         timeLimit: 25,
         gateId: 'sgate2_1',
       },

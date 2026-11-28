@@ -251,7 +251,7 @@ export class Game {
       const by = this.player.y + (hyper ? 12 : 14);
       this.bullets.push(new Bullet(bx, by, vx, 0, true, true, hyper));
       this.audio.chargeShot();
-      this.missionManager.onPlayerShoot(true);
+      this.missionManager.onPlayerShoot(true, !this.player.onGround);
       return true;
     }
 
@@ -297,6 +297,7 @@ export class Game {
       this.bullets.push(new Bullet(bx, by, vx, 0, true, false));
     }
     this.audio.shoot();
+    this.missionManager.onPlayerShoot(false, !this.player.onGround);
     return true;
   }
 
@@ -413,6 +414,27 @@ export class Game {
             this.objects.forEach((o) => {
               if (o.type === 'number_target' && o.resetOnFail) o.activated = false;
             });
+          }
+        } else if (obj.type === 'letter_target' && !obj.activated && rectsOverlap(b, obj)) {
+          b.alive = false;
+          const ok = this.missionManager.onLetterHit(obj);
+          if (ok) {
+            this.audio.gateOpen();
+            this.spawnFloatingText(`${obj.letter}!`, obj.x + obj.w / 2, obj.y - 10, '#ff9ec7');
+            this.spawnBurst(obj.x + obj.w / 2, obj.y + obj.h / 2, '#ff9ec7', 10);
+          } else {
+            this.objects.forEach((o) => {
+              if (o.type === 'letter_target' && o.resetOnFail) o.activated = false;
+            });
+          }
+        } else if (obj.type === 'word_target' && !obj.activated && rectsOverlap(b, obj)) {
+          b.alive = false;
+          const ok = this.missionManager.onWordTargetHit(obj);
+          if (ok) {
+            this.audio.gateOpen();
+            this.speech.speak(`${obj.word}!`, 2);
+            this.spawnFloatingText(`${obj.word.toUpperCase()}!`, obj.x + obj.w / 2, obj.y - 10, '#45f28f');
+            this.spawnBurst(obj.x + obj.w / 2, obj.y + obj.h / 2, '#45f28f', 10);
           }
         } else if ((obj.type === 'box' || obj.type === 'gate' || (obj.type === 'laser' && obj.active !== false)) && rectsOverlap(b, obj)) {
           if (!b.charged) b.alive = false;

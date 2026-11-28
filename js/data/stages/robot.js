@@ -37,15 +37,14 @@ export const ROBOT_STAGES = {
     ],
     missions: [
       {
-        id: 'mr1_robots',
+        id: 'mr1_shoot5',
         triggerX: 40,
         checkpointX: 60,
-        type: 'defeat_enemy_type',
-        targetType: 'robot',
-        targetCount: 2,
-        text: 'Shoot 2 robots!',
-        jp: 'ロボットを2たい倒そう！',
-        timeLimit: 30,
+        type: 'shoot_count',
+        targetCount: 5,
+        text: 'Shoot 5 times!',
+        jp: '5回ショットを撃とう！',
+        timeLimit: 20,
         gateId: 'rgate1',
       },
       {
@@ -79,11 +78,10 @@ export const ROBOT_STAGES = {
     width: 3050,
     startX: 60,
     objects: [
-      // Area 1: Shoot the yellow switch!
-      { id: 'rc2_1', type: 'coin', x: 230, y: G - 54, w: 24, h: 24 },
-      { id: 'rsw_g', type: 'switch', color: 'green', x: 540, y: G - 56, w: 36, h: 36 },
-      { id: 'rsw_y', type: 'switch', color: 'yellow', x: 640, y: G - 122, w: 36, h: 36 },
-      { id: 'rsw_b', type: 'switch', color: 'blue', x: 740, y: G - 56, w: 36, h: 36 },
+      // Area 1: Spell CAR!
+      { id: 'r2_lc', type: 'letter_target', letter: 'C', resetOnFail: true, x: 420, y: G - 62, w: 44, h: 44 },
+      { id: 'r2_la', type: 'letter_target', letter: 'A', resetOnFail: true, x: 580, y: G - 122, w: 44, h: 44 },
+      { id: 'r2_lr', type: 'letter_target', letter: 'R', resetOnFail: true, x: 740, y: G - 62, w: 44, h: 44 },
       { id: 'rgate2_1', type: 'gate', x: 940, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Shoot red, then blue!
@@ -105,14 +103,16 @@ export const ROBOT_STAGES = {
     ],
     missions: [
       {
-        id: 'mr2_yellow',
+        id: 'mr2_car',
         triggerX: 40,
         checkpointX: 60,
-        type: 'shoot_switch',
-        targetColor: 'yellow',
-        text: 'Shoot the yellow switch!',
-        jp: '黄色いスイッチ（YELLOW SWITCH）を撃とう！',
-        timeLimit: 25,
+        type: 'sequence',
+        subType: 'shoot_letters',
+        steps: ['C', 'A', 'R'],
+        text: 'Spell CAR!',
+        spokenText: 'Spell car! C, A, R!',
+        jp: 'C → A → R の順番に撃って CAR を作ろう！',
+        timeLimit: 30,
         gateId: 'rgate2_1',
       },
       {

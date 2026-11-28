@@ -10,9 +10,10 @@ export const SKY_STAGES = {
     width: 3100,
     startX: 60,
     objects: [
-      // Area 1: Jump 4 times!
-      { id: 'kc1', type: 'coin', x: 260, y: G - 96, w: 24, h: 24 },
-      { id: 'kc2', type: 'coin', x: 380, y: G - 118, w: 24, h: 24 },
+      // Area 1: Shoot the cloud! (Picture-word matching)
+      { id: 'k1_w1', type: 'word_target', word: 'sun', icon: '☀', x: 240, y: G - 62, w: 48, h: 48 },
+      { id: 'k1_w2', type: 'word_target', word: 'cloud', icon: '☁', x: 380, y: G - 124, w: 48, h: 48 },
+      { id: 'k1_w3', type: 'word_target', word: 'rainbow', icon: '🌈', x: 520, y: G - 62, w: 48, h: 48 },
       { id: 'kgate1', type: 'gate', x: 640, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Stay on the tree!
@@ -35,14 +36,14 @@ export const SKY_STAGES = {
     ],
     missions: [
       {
-        id: 'mk1_jump4',
+        id: 'mk1_cloud',
         triggerX: 40,
         checkpointX: 60,
-        type: 'jump_count',
-        targetCount: 4,
-        text: 'Jump 4 times!',
-        jp: '4回ジャンプしよう！',
-        timeLimit: 20,
+        type: 'shoot_word_target',
+        targetWord: 'cloud',
+        text: 'Shoot the cloud!',
+        jp: '雲（☁）の的を撃とう！',
+        timeLimit: 25,
         gateId: 'kgate1',
       },
       {
@@ -90,9 +91,10 @@ export const SKY_STAGES = {
       { id: 'kstar_b', type: 'star', color: 'blue', x: 1380, y: G - 48, w: 30, h: 30 },
       { id: 'kgate2_2', type: 'gate', x: 1600, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 3: Shoot green, then yellow!
-      { id: 'ksw_g', type: 'switch', color: 'green', resetOnFail: true, x: 1940, y: G - 62, w: 38, h: 38 },
-      { id: 'ksw_y', type: 'switch', color: 'yellow', resetOnFail: true, x: 2140, y: G - 122, w: 38, h: 38 },
+      // Area 3: What is 3 + 5?
+      { id: 'k2_n7', type: 'number_target', num: 7, x: 1840, y: G - 62, w: 44, h: 44 },
+      { id: 'k2_n8', type: 'number_target', num: 8, x: 2020, y: G - 122, w: 44, h: 44 },
+      { id: 'k2_n9', type: 'number_target', num: 9, x: 2200, y: G - 62, w: 44, h: 44 },
       { id: 'kgate2_3', type: 'gate', x: 2440, y: G - 130, w: 34, h: 130, open: false },
 
       // Goal
@@ -127,15 +129,15 @@ export const SKY_STAGES = {
         gateId: 'kgate2_2',
       },
       {
-        id: 'mk2_seq_sw',
+        id: 'mk2_math',
         triggerX: 1650,
         checkpointX: 1670,
-        type: 'sequence',
-        subType: 'shoot_switches',
-        steps: ['green', 'yellow'],
-        text: 'Shoot green, then yellow!',
-        jp: 'まず緑（GREEN）、つぎに黄（YELLOW）を撃とう！',
-        timeLimit: 30,
+        type: 'shoot_number',
+        targetNum: 8,
+        text: 'What is 3 + 5?',
+        spokenText: 'What is three plus five?',
+        jp: '3 たす 5 はいくつ？ 正しい数字を撃とう！',
+        timeLimit: 25,
         gateId: 'kgate2_3',
       },
     ],

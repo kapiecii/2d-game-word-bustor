@@ -15,6 +15,14 @@ export function drawWorldBackground(ctx, worldId, cameraX, stageWidth, time) {
     drawSkyBackground(ctx, cameraX, stageWidth, time);
   } else if (worldId === 'candy') {
     drawCandyBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'space') {
+    drawSpaceBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'castle') {
+    drawCastleBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'dino') {
+    drawDinoBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'ghost') {
+    drawGhostBackground(ctx, cameraX, stageWidth, time);
   } else {
     drawForestBackground(ctx, cameraX, stageWidth, time);
   }
@@ -540,6 +548,209 @@ function drawCandyBackground(ctx, cameraX, stageWidth, time) {
     const sx = ((i * 180 + time * 20 - cameraX * 0.5) % w + w) % w;
     const sy = 160 + Math.sin(time * 2.5 + i) * 50 + (i % 3) * 80;
     ctx.fillRect(sx, sy, 5, 5);
+  }
+}
+
+function drawSpaceBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#050816');
+  sky.addColorStop(0.6, '#10183a');
+  sky.addColorStop(1, '#1d2b5c');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Twinkling starfield
+  for (let i = 0; i < 42; i++) {
+    const sx = ((i * 97 - cameraX * 0.1) % w + w) % w;
+    const sy = (i * 53) % (groundTop - 40);
+    const alpha = 0.45 + 0.55 * Math.abs(Math.sin(time * 2.2 + i));
+    ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
+    const size = i % 5 === 0 ? 4 : 2;
+    ctx.fillRect(sx, sy, size, size);
+  }
+
+  // Ringed planet
+  const px = w - 260;
+  const py = 155;
+  ctx.save();
+  ctx.fillStyle = '#9b5de5';
+  ctx.beginPath();
+  ctx.arc(px, py, 56, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#ffd166';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.ellipse(px, py, 102, 20, -0.22, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // Lunar ridges (0.3x)
+  ctx.fillStyle = '#2c3a63';
+  const ridgeOffset = -(cameraX * 0.3) % 420;
+  for (let i = -1; i < 6; i++) {
+    const rx = ridgeOffset + i * 420;
+    ctx.beginPath();
+    ctx.arc(rx + 180, groundTop + 80, 220, Math.PI, 0);
+    ctx.fill();
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#7d8fb3',
+    top2: '#556585',
+    tuft: '#4cc9f0',
+    body: '#35415e',
+    line: '#222b42',
+    speck: '#5c6e94',
+  });
+}
+
+function drawCastleBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#1f1638');
+  sky.addColorStop(0.55, '#422c6b');
+  sky.addColorStop(1, '#7a4988');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Castle towers & banners (0.35x)
+  const towerOffset = -(cameraX * 0.35) % 280;
+  for (let i = -1; i < 8; i++) {
+    const tx = towerOffset + i * 280 + 20;
+    const th = 210 + ((i * 41) % 90);
+    ctx.fillStyle = '#2d2642';
+    ctx.fillRect(tx, groundTop - th, 110, th);
+    // Battlements
+    for (let b = 0; b < 4; b++) {
+      ctx.fillRect(tx + b * 28, groundTop - th - 16, 18, 16);
+    }
+    // Glowing arched windows
+    ctx.fillStyle = '#ffd166';
+    ctx.fillRect(tx + 24, groundTop - th + 38, 18, 30);
+    ctx.fillRect(tx + 68, groundTop - th + 38, 18, 30);
+    // Waving banner
+    const wave = Math.sin(time * 4 + i) * 3;
+    ctx.fillStyle = '#e63946';
+    ctx.fillRect(tx + 46, groundTop - th - 40, 24, 18 + wave * 0.3);
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#8b8ca3',
+    top2: '#64667d',
+    tuft: '#ffd166',
+    body: '#48495e',
+    line: '#2e2f40',
+    speck: '#6a6c85',
+  });
+}
+
+function drawDinoBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#3a86a8');
+  sky.addColorStop(0.55, '#8ac99b');
+  sky.addColorStop(1, '#e9f5c9');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Distant misty volcano peaks (0.2x)
+  const pkOffset = -(cameraX * 0.2) % 480;
+  ctx.fillStyle = '#4e7d63';
+  for (let i = -1; i < 5; i++) {
+    const px = pkOffset + i * 480;
+    ctx.beginPath();
+    ctx.moveTo(px, groundTop);
+    ctx.lineTo(px + 160, groundTop - 250);
+    ctx.lineTo(px + 340, groundTop);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Giant prehistoric ferns & palms (0.45x)
+  const fernOffset = -(cameraX * 0.45) % 210;
+  for (let i = -1; i < 10; i++) {
+    const fx = fernOffset + i * 210 + 30;
+    const sway = Math.sin(time * 2 + i) * 4;
+    ctx.fillStyle = '#6f4e37';
+    ctx.fillRect(fx + 22, groundTop - 155, 16, 155);
+    ctx.fillStyle = '#2d8a47';
+    ctx.fillRect(fx - 12 + sway, groundTop - 180, 84, 28);
+    ctx.fillRect(fx + 4 + sway, groundTop - 204, 52, 24);
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#52b755',
+    top2: '#368a39',
+    tuft: '#a7e866',
+    body: '#7a5230',
+    line: '#57391f',
+    speck: '#996a42',
+  });
+}
+
+function drawGhostBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#0c0b1d');
+  sky.addColorStop(0.55, '#1e1b3a');
+  sky.addColorStop(1, '#3b2e5a');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Huge glowing full moon
+  ctx.fillStyle = 'rgba(255, 245, 200, 0.92)';
+  ctx.beginPath();
+  ctx.arc(w - 220, 130, 62, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Spooky dead trees & haunted rooftops (0.35x)
+  const hOffset = -(cameraX * 0.35) % 300;
+  ctx.fillStyle = '#17142b';
+  for (let i = -1; i < 7; i++) {
+    const hx = hOffset + i * 300 + 30;
+    ctx.fillRect(hx, groundTop - 160, 120, 160);
+    ctx.beginPath();
+    ctx.moveTo(hx - 14, groundTop - 160);
+    ctx.lineTo(hx + 60, groundTop - 235);
+    ctx.lineTo(hx + 134, groundTop - 160);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#c77dff';
+    ctx.fillRect(hx + 28, groundTop - 120, 20, 28);
+    ctx.fillRect(hx + 72, groundTop - 120, 20, 28);
+    ctx.fillStyle = '#17142b';
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#5a4e78',
+    top2: '#3f3559',
+    tuft: '#c77dff',
+    body: '#2a233d',
+    line: '#1a1529',
+    speck: '#463b63',
+  });
+
+  // Floating ghostly wisps
+  ctx.fillStyle = 'rgba(199, 125, 255, 0.55)';
+  for (let i = 0; i < 10; i++) {
+    const wx = ((i * 170 + Math.sin(time * 2 + i) * 24 - cameraX * 0.45) % w + w) % w;
+    const wy = 200 + Math.cos(time * 2.3 + i) * 60 + (i % 3) * 80;
+    ctx.beginPath();
+    ctx.arc(wx, wy, 6, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 

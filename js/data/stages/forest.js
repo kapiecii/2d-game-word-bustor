@@ -23,9 +23,10 @@ export const FOREST_STAGES = {
       { id: 'c5', type: 'coin', x: 874, y: G - 118, w: 24, h: 24 },
       { id: 'gate2', type: 'gate', x: 1320, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 3: Jump 3 times!
-      { id: 'c6', type: 'coin', x: 1520, y: G - 96, w: 24, h: 24 },
-      { id: 'c7', type: 'coin', x: 1620, y: G - 116, w: 24, h: 24 },
+      // Area 3: Shoot the apple! (Picture-word matching)
+      { id: 'f1_w1', type: 'word_target', word: 'banana', icon: '🍌', x: 1480, y: G - 62, w: 48, h: 48 },
+      { id: 'f1_w2', type: 'word_target', word: 'apple', icon: '🍎', x: 1600, y: G - 124, w: 48, h: 48 },
+      { id: 'f1_w3', type: 'word_target', word: 'grape', icon: '🍇', x: 1720, y: G - 62, w: 48, h: 48 },
       { id: 'gate3', type: 'gate', x: 1840, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 4: Shoot the red slime! (Blue slime nearby)
@@ -65,14 +66,14 @@ export const FOREST_STAGES = {
         gateId: 'gate2',
       },
       {
-        id: 'm1_jump3',
+        id: 'm1_apple',
         triggerX: 1370,
         checkpointX: 1390,
-        type: 'jump_count',
-        targetCount: 3,
-        text: 'Jump 3 times!',
-        jp: '3回ジャンプしよう！',
-        timeLimit: 20,
+        type: 'shoot_word_target',
+        targetWord: 'apple',
+        text: 'Shoot the apple!',
+        jp: 'リンゴ（🍎）の的を撃とう！',
+        timeLimit: 25,
         gateId: 'gate3',
       },
       {
@@ -98,10 +99,10 @@ export const FOREST_STAGES = {
     width: 3350,
     startX: 60,
     objects: [
-      // Area 1: Key on tree
-      { id: 'box2_1', type: 'box', x: 260, y: G - 48, w: 48, h: 48 },
-      { id: 'tree2_1', type: 'tree', x: 400, y: G - 115, w: 120, h: 26 },
-      { id: 'key1', type: 'key', x: 448, y: G - 154, w: 24, h: 28 },
+      // Area 1: Shoot A, B, C!
+      { id: 'f2_la', type: 'letter_target', letter: 'A', resetOnFail: true, x: 240, y: G - 62, w: 44, h: 44 },
+      { id: 'f2_lb', type: 'letter_target', letter: 'B', resetOnFail: true, x: 380, y: G - 122, w: 44, h: 44 },
+      { id: 'f2_lc', type: 'letter_target', letter: 'C', resetOnFail: true, x: 520, y: G - 62, w: 44, h: 44 },
       { id: 'gate2_1', type: 'gate', x: 660, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Shoot the high bat! (High vs Low bat)
@@ -129,14 +130,15 @@ export const FOREST_STAGES = {
     ],
     missions: [
       {
-        id: 'm2_key',
+        id: 'm2_abc',
         triggerX: 40,
         checkpointX: 60,
-        type: 'collect_key',
-        targetId: 'key1',
-        text: 'Get the key!',
-        jp: '木の上のカギを取ろう！',
-        timeLimit: 25,
+        type: 'sequence',
+        subType: 'shoot_letters',
+        steps: ['A', 'B', 'C'],
+        text: 'Shoot A, B, C!',
+        jp: 'A → B → C の順番に撃とう！',
+        timeLimit: 30,
         gateId: 'gate2_1',
       },
       {
@@ -198,10 +200,10 @@ export const FOREST_STAGES = {
       { id: 'f2b_sh_s', type: 'shape_target', shape: 'square', color: 'red', x: 1320, y: G - 62, w: 46, h: 46 },
       { id: 'f2b_gate2', type: 'gate', x: 1520, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 3: Stay on the tree! (3s)
-      { id: 'f2b_box1', type: 'box', x: 1760, y: G - 48, w: 48, h: 48 },
-      { id: 'f2b_tree2', type: 'tree', x: 1920, y: G - 122, w: 130, h: 26 },
-      { id: 'f2b_c2', type: 'coin', x: 1972, y: G - 165, w: 24, h: 24 },
+      // Area 3: What is 1 + 2?
+      { id: 'f2b_n2', type: 'number_target', num: 2, x: 1760, y: G - 62, w: 44, h: 44 },
+      { id: 'f2b_n3', type: 'number_target', num: 3, x: 1920, y: G - 122, w: 44, h: 44 },
+      { id: 'f2b_n4', type: 'number_target', num: 4, x: 2080, y: G - 62, w: 44, h: 44 },
       { id: 'f2b_gate3', type: 'gate', x: 2320, y: G - 130, w: 34, h: 130, open: false },
 
       // Goal
@@ -235,14 +237,14 @@ export const FOREST_STAGES = {
         gateId: 'f2b_gate2',
       },
       {
-        id: 'mf2b_stay',
+        id: 'mf2b_math',
         triggerX: 1570,
         checkpointX: 1590,
-        type: 'stay_on_object',
-        targetId: 'f2b_tree2',
-        holdSeconds: 3,
-        text: 'Stay on the tree!',
-        jp: '木の上に3びょう乗りつづけよう！',
+        type: 'shoot_number',
+        targetNum: 3,
+        text: 'What is 1 + 2?',
+        spokenText: 'What is one plus two?',
+        jp: '1 たす 2 はいくつ？ 正しい数字を撃とう！',
         timeLimit: 25,
         gateId: 'f2b_gate3',
       },

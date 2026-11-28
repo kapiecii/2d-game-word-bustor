@@ -1,4 +1,4 @@
-// World & Stage Registry (8 Worlds x 4 Stages = 32 Stages)
+// World & Stage Registry (12 Worlds x 4 Stages = 48 Stages)
 
 import { FOREST_STAGES } from './stages/forest.js';
 import { DESERT_STAGES } from './stages/desert.js';
@@ -8,6 +8,10 @@ import { OCEAN_STAGES } from './stages/ocean.js';
 import { VOLCANO_STAGES } from './stages/volcano.js';
 import { SKY_STAGES } from './stages/sky.js';
 import { CANDY_STAGES } from './stages/candy.js';
+import { SPACE_STAGES } from './stages/space.js';
+import { CASTLE_STAGES } from './stages/castle.js';
+import { DINO_STAGES } from './stages/dino.js';
+import { GHOST_STAGES } from './stages/ghost.js';
 
 export const WORLDS = [
   {
@@ -98,6 +102,50 @@ export const WORLDS = [
       { id: 'candy-3', label: 'Candy 4', subtitle: 'Candy King', isBoss: true },
     ],
   },
+  {
+    id: 'space',
+    name: '9. Space World',
+    implemented: true,
+    stages: [
+      { id: 'space-1', label: 'Space 1', subtitle: 'Star Station', isBoss: false },
+      { id: 'space-2', label: 'Space 2', subtitle: 'Moon Crater', isBoss: false },
+      { id: 'space-2b', label: 'Space 3', subtitle: 'Nebula Core', isBoss: false },
+      { id: 'space-3', label: 'Space 4', subtitle: 'Alien UFO', isBoss: true },
+    ],
+  },
+  {
+    id: 'castle',
+    name: '10. Castle World',
+    implemented: true,
+    stages: [
+      { id: 'castle-1', label: 'Castle 1', subtitle: 'Stone Bridge', isBoss: false },
+      { id: 'castle-2', label: 'Castle 2', subtitle: 'Magic Hall', isBoss: false },
+      { id: 'castle-2b', label: 'Castle 3', subtitle: 'Royal Tower', isBoss: false },
+      { id: 'castle-3', label: 'Castle 4', subtitle: 'Dark Knight', isBoss: true },
+    ],
+  },
+  {
+    id: 'dino',
+    name: '11. Dino World',
+    implemented: true,
+    stages: [
+      { id: 'dino-1', label: 'Dino 1', subtitle: 'Fern Valley', isBoss: false },
+      { id: 'dino-2', label: 'Dino 2', subtitle: 'Fossil Ridge', isBoss: false },
+      { id: 'dino-2b', label: 'Dino 3', subtitle: 'Volcanic Jungle', isBoss: false },
+      { id: 'dino-3', label: 'Dino 4', subtitle: 'T-Rex King', isBoss: true },
+    ],
+  },
+  {
+    id: 'ghost',
+    name: '12. Ghost World',
+    implemented: true,
+    stages: [
+      { id: 'ghost-1', label: 'Ghost 1', subtitle: 'Spooky Garden', isBoss: false },
+      { id: 'ghost-2', label: 'Ghost 2', subtitle: 'Haunted Hall', isBoss: false },
+      { id: 'ghost-2b', label: 'Ghost 3', subtitle: 'Moonlit Attic', isBoss: false },
+      { id: 'ghost-3', label: 'Ghost 4', subtitle: 'Phantom Ghost', isBoss: true },
+    ],
+  },
 ];
 
 const STAGE_DATA_MAP = {
@@ -109,6 +157,10 @@ const STAGE_DATA_MAP = {
   ...VOLCANO_STAGES,
   ...SKY_STAGES,
   ...CANDY_STAGES,
+  ...SPACE_STAGES,
+  ...CASTLE_STAGES,
+  ...DINO_STAGES,
+  ...GHOST_STAGES,
 };
 
 export function getStageData(stageId) {

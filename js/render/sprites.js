@@ -825,7 +825,182 @@ const BOSS_CANDY_1 = [
   '.DDDD......DDDD.',
 ];
 
+const BOSS_UFO_0 = [
+  '.....CCCCCC.....',
+  '...CCWWWWWWCC...',
+  '..CWWGGGGGGWWC..',
+  '..CWGGEWWGEGWC..',
+  '..CWGGGGGGGGWC..',
+  '.SSSSSSSSSSSSSS.',
+  'SSYYSSYYSSYYSSYY',
+  'SSSSSSSSSSSSSSSS',
+  '.DDDDDDDDDDDDDD.',
+  '...CC......CC...',
+  '..C..C....C..C..',
+  '................',
+  '................',
+  '................',
+];
+
+const BOSS_UFO_1 = [
+  '.....CCCCCC.....',
+  '...CCWWWWWWCC...',
+  '..CWWGGGGGGWWC..',
+  '..CWGGEWWGEGWC..',
+  '..CWGGGGGGGGWC..',
+  '.SSSSSSSSSSSSSS.',
+  'YYSSYYSSYYSSYYSS',
+  'SSSSSSSSSSSSSSSS',
+  '.DDDDDDDDDDDDDD.',
+  '....CC....CC....',
+  '...C..C..C..C...',
+  '................',
+  '................',
+  '................',
+];
+
+const BOSS_KNIGHT_0 = [
+  '..YY........YY..',
+  '...YDDDDDDDDY...',
+  '...DDDDDDDDDD...',
+  '..DDSSSSSSSSDD..',
+  '..DDSRRSSRRSDD..',
+  '..DDSSSSSSSSDD..',
+  '...DDDDDDDDDD...',
+  '.PPDDDDYYDDDDPP.',
+  'PPPDDDDDDDDDDPPP',
+  'PP.DDDDDDDDDD.PP',
+  '....DDD..DDD....',
+  '...SSSS..SSSS...',
+  '...DDDD..DDDD...',
+  '..DDDDD..DDDDD..',
+];
+
+const BOSS_KNIGHT_1 = [
+  '...Y........Y...',
+  '...YDDDDDDDDY...',
+  '...DDDDDDDDDD...',
+  '..DDSSSSSSSSDD..',
+  '..DDSRRSSRRSDD..',
+  '..DDSSSSSSSSDD..',
+  '...DDDDDDDDDD...',
+  'PPPDDDDYYDDDDPPP',
+  'PP.DDDDDDDDDD.PP',
+  '....DDDDDDDD....',
+  '...DDD....DDD...',
+  '..SSSS....SSSS..',
+  '..DDDD....DDDD..',
+  '.DDDDD....DDDDD.',
+];
+
+const BOSS_TREX_0 = [
+  '....GGGGGGGG....',
+  '...GGGGGGGGGG...',
+  '..GGGYEGGGGGGG..',
+  '..GGGGGGGGGGGG..',
+  '..GGWWWWWWWWGG..',
+  '..GGGGGGGGGG....',
+  '...GGGGYYYYGG...',
+  '..GGGGYYYYYYGG..',
+  '.GGGGGGYYYYGGGG.',
+  'GG.GGGGGGGGGG...',
+  '....GGGGGGGG....',
+  '....GGG..GGG....',
+  '...GGGG..GGGG...',
+  '..WWGGG..WWGGG..',
+];
+
+const BOSS_TREX_1 = [
+  '....GGGGGGGG....',
+  '...GGGGGGGGGG...',
+  '..GGGYEGGGGGGG..',
+  '..GGGGGGGGGGGG..',
+  '..GGWWWWWWWWGG..',
+  '..GGGGGGGGGG....',
+  '...GGGGYYYYGG...',
+  '.GGGGGYYYYYYGG..',
+  'GGGGGGGYYYYGGGG.',
+  '...GGGGGGGGGG...',
+  '....GGGGGGGG....',
+  '...GGG....GGG...',
+  '..GGGG....GGGG..',
+  '.WWGGG....WWGGG.',
+];
+
+const BOSS_GHOST_0 = [
+  '....LLLLLLLL....',
+  '..LLWWWWWWWWLL..',
+  '.LWWWWWWWWWWWWL.',
+  '.LWWWWWLLWWWWWL.',
+  '.LWWEEWWWWEEWWL.',
+  '.LWWEEWWWWEEWWL.',
+  '.LWWWWWWWWWWWWL.',
+  '.LWWWWEEEEWWWWL.',
+  '.LWWWWWWWWWWWWL.',
+  '.LLWWWWWWWWWWLL.',
+  '..LLWWWWWWWWLL..',
+  '..LL.LL..LL.LL..',
+  '..L...L..L...L..',
+  '................',
+];
+
+const BOSS_GHOST_1 = [
+  '....LLLLLLLL....',
+  '..LLWWWWWWWWLL..',
+  '.LWWWWWWWWWWWWL.',
+  '.LWWWWWLLWWWWWL.',
+  '.LWWEEWWWWEEWWL.',
+  '.LWWEEWWWWEEWWL.',
+  '.LWWWWWWWWWWWWL.',
+  '.LWWWWEEEEWWWWL.',
+  '.LWWWWWWWWWWWWL.',
+  '.LLWWWWWWWWWWLL.',
+  '..LLWWWWWWWWLL..',
+  '...LL.LL.LL.LL..',
+  '....L..L..L..L..',
+  '................',
+];
+
 export function getBossSprite(bossId, frame = 0, flipX = false, scale = 6) {
+  if (bossId === 'alien_ufo') {
+    const palette = {
+      C: '#4cc9f0',
+      W: '#e0fbff',
+      G: '#45d17a',
+      E: '#1a1f36',
+      S: '#9fb0cc',
+      D: '#495057',
+      Y: '#ffd24c',
+    };
+    return getSprite(`boss_ufo_${frame % 2}`, frame % 2 === 0 ? BOSS_UFO_0 : BOSS_UFO_1, palette, scale, flipX);
+  }
+  if (bossId === 'dark_knight') {
+    const palette = {
+      Y: '#ffd24c',
+      D: '#2b2442',
+      S: '#8d99ae',
+      R: '#ff4d6d',
+      P: '#7209b7',
+    };
+    return getSprite(`boss_knight_${frame % 2}`, frame % 2 === 0 ? BOSS_KNIGHT_0 : BOSS_KNIGHT_1, palette, scale, flipX);
+  }
+  if (bossId === 'trex_king') {
+    const palette = {
+      G: '#2d8a47',
+      Y: '#ffd166',
+      E: '#e63946',
+      W: '#ffffff',
+    };
+    return getSprite(`boss_trex_${frame % 2}`, frame % 2 === 0 ? BOSS_TREX_0 : BOSS_TREX_1, palette, scale, flipX);
+  }
+  if (bossId === 'phantom_ghost') {
+    const palette = {
+      L: '#c77dff',
+      W: '#f5ebff',
+      E: '#1a1f36',
+    };
+    return getSprite(`boss_ghost_${frame % 2}`, frame % 2 === 0 ? BOSS_GHOST_0 : BOSS_GHOST_1, palette, scale, flipX);
+  }
   if (bossId === 'candy_king') {
     const palette = {
       Y: '#ffd24c',

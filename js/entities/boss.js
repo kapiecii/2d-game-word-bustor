@@ -15,6 +15,10 @@ const BOSS_PATTERNS = {
   fire_dragon: ['hover_drop', 'shoot', 'swoop'],
   thunder_bird: ['hover_drop', 'dash', 'hover_pause'],
   candy_king: ['spread_shot', 'big_jump', 'double_shot'],
+  alien_ufo: ['hover_drop', 'spread_shot', 'swoop'],
+  dark_knight: ['dash', 'double_shot', 'jump'],
+  trex_king: ['big_jump', 'dash', 'shoot'],
+  phantom_ghost: ['hover_pause', 'spread_shot', 'hover_drop'],
 };
 
 export class Boss {

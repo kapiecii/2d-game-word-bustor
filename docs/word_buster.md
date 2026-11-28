@@ -150,7 +150,7 @@
 
 ### 6.1 ステージ構成・進行・再挑戦
 * **ワールド・ステージ数**:
-  * 8つの世界を用意し、各世界に4ステージ（通常3ステージ＋ボス1ステージ）を配置する（現在 **合計32ステージ**）。
+  * 12つの世界を用意し、各世界に4ステージ（通常3ステージ＋ボス1ステージ）を配置する（現在 **合計48ステージ**）。
   * 将来的にさらに世界やステージを追加できる構造にする。
 * **プレイ時間目安**: 1ステージあたり 3〜5分。
 * **ゲーム進行形式**: 通常プレイ（移動・戦闘・コイン収集）とミッション（ゲート開放やナビゲーターの指示達成）を組み合わせる。
@@ -171,11 +171,15 @@
 6. **Volcano World**: `Volcano 1` → `Volcano 2` → `Volcano 3` → `Volcano 4`（ボス：Fire Dragon）
 7. **Sky World**: `Sky 1` → `Sky 2` → `Sky 3` → `Sky 4`（ボス：Thunder Bird）
 8. **Candy World**: `Candy 1` → `Candy 2` → `Candy 3` → `Candy 4`（ボス：Candy King）
+9. **Space World**: `Space 1` → `Space 2` → `Space 3` → `Space 4`（ボス：Alien UFO）
+10. **Castle World**: `Castle 1` → `Castle 2` → `Castle 3` → `Castle 4`（ボス：Dark Knight）
+11. **Dino World**: `Dino 1` → `Dino 2` → `Dino 3` → `Dino 4`（ボス：T-Rex King）
+12. **Ghost World**: `Ghost 1` → `Ghost 2` → `Ghost 3` → `Ghost 4`（ボス：Phantom Ghost）
 
 ※ 各ステージのクリアが次のステージの解放条件となる。
 
 ### 6.2 ボス構成・ボス戦仕様
-* **ボス構成（全8体・個性別AI）**:
+* **ボス構成（全12体・個性別AI）**:
   * **Forest 4：Forest Guardian** — 巨大な森のモンスター。弾・ジャンプ・接近の基本バランス型。
   * **Desert 4：Rock Golem** — 岩石の大型モンスター。高速突進（`"Jump over the boss!"`）とジャンプ攻撃。
   * **Snow 4：Ice Machine** — 氷の大型ロボット。2連弾（`"Jump over the shots!"`）と突進。
@@ -184,6 +188,10 @@
   * **Volcano 4：Fire Dragon** — 炎のドラゴン。空中ホバリングからの火の玉投下（`"Look up! Move left/right!"`）と急降下。
   * **Sky 4：Thunder Bird** — 雷の鳥。空中移動からの落雷弾・疾風突進・空中停止（`"Jump and shoot!"`）。
   * **Candy 4：Candy King** — お菓子の王様。キャンディ拡散弾（`"Dodge the candy!"`）・大ジャンプ・2連弾。
+  * **Space 4：Alien UFO** — 宇宙UFO。空中投下・拡散ビーム・急降下。
+  * **Castle 4：Dark Knight** — 闇の騎士。高速突進・2連斬撃波・ジャンプ。
+  * **Dino 4：T-Rex King** — 恐竜王。大ジャンプ踏みつけ・猛突進・岩弾。
+  * **Ghost 4：Phantom Ghost** — 幽霊の王。空中浮遊・拡散霊弾・上空投下の最終決戦。
 * **ボス戦・英語ミッション**:
   * ボスの攻撃パターンや状況に応じて、Buddyが英語で指示を出す。
   * プレイヤーは指示の意味を理解し、適切な操作（攻撃・回避・移動など）を行う。
@@ -217,12 +225,13 @@
 ### 6.3 通常ステージのミッション例（バリエーション一覧）
 ステージ途中のゲート前やエリア進入時にミッションが発生する。
 
-1. **収集・基本アクション**: `"Get 3 coins!"` / `"Get the key!"` / `"Jump 3 times!"` / `"Use a big shot!"`
+1. **収集・基本アクション**: `"Get 3 coins!"` / `"Get the key!"` / `"Jump 3 times!"` / `"Shoot 5 times!"` / `"Use a big shot!"` / `"Jump and shoot 3 times!"`
 2. **位置・方向・前置詞**: `"Jump on the left box!"` / `"Shoot the high bat!"` / `"Get the coin under the tree!"` / `"Look left, then look right!"`
-3. **色・大きさ・形・数字の識別**: `"Shoot the red slime!"` / `"Shoot the big slime!"` / `"Get the blue star!"` / `"Shoot the green switch!"` / `"Shoot the triangle!"`（`circle` / `square` / `triangle`） / `"Shoot number 5!"`
-4. **ルール・回避（キープ・禁止系）**: `"Don't move!"`（3秒静止） / `"Don't jump! Go to the gate!"`（ジャンプ禁止進行） / `"Stay on the tree!"`（3秒滞在） / `"Dodge the shots!"`（5秒回避）
-5. **順番（2〜3ステップ）**: `"Jump on the box, then the tree!"` / `"Shoot red, then blue!"` / `"Shoot 1, 2, 3!"`
-6. **ワールド固有ギミック**: `"Break the rock!"`（岩破壊） / `"Jump over the cactus!"`（砂漠のサボテン） / `"Break the ice!"`（雪原の氷） / `"Stop the laser!"`（ロボット工場のレーザー停止）
+3. **色・大きさ・形・数字・たし算の識別**: `"Shoot the red slime!"` / `"Shoot the big slime!"` / `"Get the blue star!"` / `"Shoot the green switch!"` / `"Shoot the triangle!"` / `"Shoot number 5!"` / `"What is 2 + 3?"`
+4. **イラスト英単語・スペル**: `"Shoot the apple!"`（🍎/🍌/🍇等から絵を識別） / `"Shoot the moon!"` / `"Shoot the fish!"` / `"Shoot A, B, C!"` / `"Spell CAT!"` / `"Spell DOG!"` / `"Spell SUN!"`
+5. **ルール・回避（キープ・禁止系）**: `"Don't move!"`（3秒静止） / `"Don't jump! Go to the gate!"`（ジャンプ禁止進行） / `"Stay on the tree!"`（3秒滞在） / `"Dodge the shots!"`（5秒回避）
+6. **順番（2〜3ステップ）**: `"Jump on the box, then the tree!"` / `"Shoot red, then blue!"` / `"Shoot 1, 2, 3!"`
+7. **ワールド固有ギミック**: `"Break the rock!"`（岩破壊） / `"Jump over the cactus!"`（砂漠のサボテン） / `"Break the ice!"`（雪原の氷） / `"Stop the laser!"`（ロボット工場のレーザー停止）
 
 ### 6.4 ライフ・制限時間・成功／失敗時の処理
 * **ライフ・タイマー仕様**:

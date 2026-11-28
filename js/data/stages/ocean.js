@@ -17,10 +17,10 @@ export const OCEAN_STAGES = {
       { id: 'oc4', type: 'coin', x: 560, y: G - 100, w: 24, h: 24 },
       { id: 'ogate1', type: 'gate', x: 700, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 2: Get the yellow star (Red, Blue, Yellow)
-      { id: 'ostar_r', type: 'star', color: 'red', x: 900, y: G - 48, w: 30, h: 30 },
-      { id: 'ostar_b', type: 'star', color: 'blue', x: 1100, y: G - 115, w: 30, h: 30 },
-      { id: 'ostar_y', type: 'star', color: 'yellow', x: 1300, y: G - 48, w: 30, h: 30 },
+      // Area 2: Shoot the fish! (Picture-word matching)
+      { id: 'o1_w1', type: 'word_target', word: 'crab', icon: '🦀', x: 900, y: G - 62, w: 48, h: 48 },
+      { id: 'o1_w2', type: 'word_target', word: 'fish', icon: '🐟', x: 1100, y: G - 124, w: 48, h: 48 },
+      { id: 'o1_w3', type: 'word_target', word: 'octopus', icon: '🐙', x: 1300, y: G - 62, w: 48, h: 48 },
       { id: 'ogate2', type: 'gate', x: 1500, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 3: Shoot the small slime! (Big vs Small)
@@ -48,13 +48,13 @@ export const OCEAN_STAGES = {
         gateId: 'ogate1',
       },
       {
-        id: 'mo1_star',
+        id: 'mo1_fish',
         triggerX: 750,
         checkpointX: 770,
-        type: 'collect_star',
-        targetColor: 'yellow',
-        text: 'Get the yellow star!',
-        jp: '黄色いスター（YELLOW STAR）を取ろう！',
+        type: 'shoot_word_target',
+        targetWord: 'fish',
+        text: 'Shoot the fish!',
+        jp: '魚（🐟）の的を撃とう！',
         timeLimit: 25,
         gateId: 'ogate2',
       },
@@ -81,9 +81,10 @@ export const OCEAN_STAGES = {
     width: 3100,
     startX: 60,
     objects: [
-      // Area 1: Shoot blue, then green!
-      { id: 'osw_b', type: 'switch', color: 'blue', resetOnFail: true, x: 420, y: G - 62, w: 38, h: 38 },
-      { id: 'osw_g', type: 'switch', color: 'green', resetOnFail: true, x: 580, y: G - 120, w: 38, h: 38 },
+      // Area 1: What is 3 + 3?
+      { id: 'o2_n5', type: 'number_target', num: 5, x: 320, y: G - 62, w: 44, h: 44 },
+      { id: 'o2_n6', type: 'number_target', num: 6, x: 480, y: G - 122, w: 44, h: 44 },
+      { id: 'o2_n8', type: 'number_target', num: 8, x: 640, y: G - 62, w: 44, h: 44 },
       { id: 'ogate2_1', type: 'gate', x: 820, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Shoot the low bat! (High vs Low)
@@ -105,15 +106,15 @@ export const OCEAN_STAGES = {
     ],
     missions: [
       {
-        id: 'mo2_seq',
+        id: 'mo2_math',
         triggerX: 40,
         checkpointX: 60,
-        type: 'sequence',
-        subType: 'shoot_switches',
-        steps: ['blue', 'green'],
-        text: 'Shoot blue, then green!',
-        jp: 'まず青（BLUE）、つぎに緑（GREEN）を撃とう！',
-        timeLimit: 30,
+        type: 'shoot_number',
+        targetNum: 6,
+        text: 'What is 3 + 3?',
+        spokenText: 'What is three plus three?',
+        jp: '3 たす 3 はいくつ？ 正しい数字を撃とう！',
+        timeLimit: 25,
         gateId: 'ogate2_1',
       },
       {

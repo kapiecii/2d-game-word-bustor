@@ -15,8 +15,10 @@ export const VOLCANO_STAGES = {
       { id: 'vbox_r', type: 'box', label: 'RIGHT BOX', x: 520, y: G - 54, w: 54, h: 54 },
       { id: 'vgate1', type: 'gate', x: 760, y: G - 130, w: 34, h: 130, open: false },
 
-      // Area 2: Don't move!
-      { id: 'vc1', type: 'coin', x: 960, y: G - 56, w: 24, h: 24 },
+      // Area 2: Shoot the fire! (Picture-word matching)
+      { id: 'v1_w1', type: 'word_target', word: 'water', icon: '💧', x: 860, y: G - 62, w: 48, h: 48 },
+      { id: 'v1_w2', type: 'word_target', word: 'fire', icon: '🔥', x: 1000, y: G - 124, w: 48, h: 48 },
+      { id: 'v1_w3', type: 'word_target', word: 'leaf', icon: '🍃', x: 1140, y: G - 62, w: 48, h: 48 },
       { id: 'vgate2', type: 'gate', x: 1260, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 3: Stop the laser!
@@ -47,14 +49,14 @@ export const VOLCANO_STAGES = {
         gateId: 'vgate1',
       },
       {
-        id: 'mv1_freeze',
+        id: 'mv1_fire',
         triggerX: 810,
         checkpointX: 830,
-        type: 'dont_move',
-        holdSeconds: 3,
-        text: "Don't move!",
-        jp: '3びょう間じっと止まろう！',
-        timeLimit: 20,
+        type: 'shoot_word_target',
+        targetWord: 'fire',
+        text: 'Shoot the fire!',
+        jp: '炎（🔥）の的を撃とう！',
+        timeLimit: 25,
         gateId: 'vgate2',
       },
       {
@@ -89,8 +91,10 @@ export const VOLCANO_STAGES = {
     width: 3100,
     startX: 60,
     objects: [
-      // Area 1: Break the rock!
-      { id: 'vrock1', type: 'rock', x: 460, y: G - 76, w: 64, h: 76, broken: false },
+      // Area 1: Spell HOT!
+      { id: 'v2_lh', type: 'letter_target', letter: 'H', resetOnFail: true, x: 260, y: G - 62, w: 44, h: 44 },
+      { id: 'v2_lo', type: 'letter_target', letter: 'O', resetOnFail: true, x: 420, y: G - 122, w: 44, h: 44 },
+      { id: 'v2_lt', type: 'letter_target', letter: 'T', resetOnFail: true, x: 580, y: G - 62, w: 44, h: 44 },
       { id: 'vgate2_1', type: 'gate', x: 720, y: G - 130, w: 34, h: 130, open: false },
 
       // Area 2: Dodge the shots!
@@ -111,13 +115,15 @@ export const VOLCANO_STAGES = {
     ],
     missions: [
       {
-        id: 'mv2_rock',
+        id: 'mv2_hot',
         triggerX: 40,
         checkpointX: 60,
-        type: 'break_object',
-        targetId: 'vrock1',
-        text: 'Break the rock!',
-        jp: 'チャージショットで岩をこわそう！',
+        type: 'sequence',
+        subType: 'shoot_letters',
+        steps: ['H', 'O', 'T'],
+        text: 'Spell HOT!',
+        spokenText: 'Spell hot! H, O, T!',
+        jp: 'H → O → T の順番に撃って HOT を作ろう！',
         timeLimit: 30,
         gateId: 'vgate2_1',
       },

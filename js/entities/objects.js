@@ -269,6 +269,30 @@ export function drawWorldObjects(ctx, objects, cameraX, time) {
       ctx.textBaseline = 'middle';
       ctx.fillText(String(obj.num ?? ''), sx + obj.w / 2, sy + obj.h / 2 + 1);
       ctx.textBaseline = 'alphabetic';
+    } else if (obj.type === 'letter_target') {
+      ctx.fillStyle = obj.activated ? '#45d17a' : '#31245a';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = obj.activated ? '#98f5b8' : '#ff9ec7';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(sx + 1.5, sy + 1.5, obj.w - 3, obj.h - 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 22px "Trebuchet MS", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(obj.letter ?? ''), sx + obj.w / 2, sy + obj.h / 2 + 1);
+      ctx.textBaseline = 'alphabetic';
+    } else if (obj.type === 'word_target') {
+      // Picture-only target (no English text label so player matches Buddy's English word to the icon!)
+      ctx.fillStyle = obj.activated ? '#45d17a' : '#1b2b48';
+      ctx.fillRect(sx, sy, obj.w, obj.h);
+      ctx.strokeStyle = obj.activated ? '#98f5b8' : '#4cc9f0';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(sx + 1.5, sy + 1.5, obj.w - 3, obj.h - 3);
+      ctx.font = '26px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(obj.icon || '?', sx + obj.w / 2, sy + obj.h / 2 + 2);
+      ctx.textBaseline = 'alphabetic';
     } else if (obj.type === 'box') {
       ctx.fillStyle = '#b07232';
       ctx.fillRect(sx, sy, obj.w, obj.h);
