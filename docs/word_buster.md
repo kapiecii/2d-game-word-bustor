@@ -150,8 +150,8 @@
 
 ### 6.1 ステージ構成・進行・再挑戦
 * **ワールド・ステージ数**:
-  * 4つの世界を用意し、各世界に3ステージを配置する（初期構成は **合計12ステージ**）。
-  * 将来的に世界やステージを追加できる構造にする。
+  * 7つの世界を用意し、各世界に3ステージを配置する（現在 **合計21ステージ**）。
+  * 将来的にさらに世界やステージを追加できる構造にする。
 * **プレイ時間目安**: 1ステージあたり 3〜5分。
 * **ゲーム進行形式**: 通常プレイ（移動・戦闘・コイン収集）とミッション（ゲート開放やナビゲーターの指示達成）を組み合わせる。
 * **ステージ解放ルール**:
@@ -163,19 +163,25 @@
   * クリア済みステージのスコアやハイスコアは保存する。
 
 #### ステージ解放イメージ
-1. **Forest World**: `Forest 1` → `Forest 2` → `Forest 3`（ボス）
-2. **Desert World**: `Desert 1` → `Desert 2` → `Desert 3`（ボス）
-3. **Snow World**: `Snow 1` → `Snow 2` → `Snow 3`（ボス）
-4. **Robot World**: `Robot 1` → `Robot 2` → `Robot 3`（ボス）
+1. **Forest World**: `Forest 1` → `Forest 2` → `Forest 3`（ボス：Forest Guardian）
+2. **Desert World**: `Desert 1` → `Desert 2` → `Desert 3`（ボス：Rock Golem）
+3. **Snow World**: `Snow 1` → `Snow 2` → `Snow 3`（ボス：Ice Machine）
+4. **Robot World**: `Robot 1` → `Robot 2` → `Robot 3`（ボス：Mega Robot）
+5. **Ocean World**: `Ocean 1` → `Ocean 2` → `Ocean 3`（ボス：Giant Octopus）
+6. **Volcano World**: `Volcano 1` → `Volcano 2` → `Volcano 3`（ボス：Fire Dragon）
+7. **Sky World**: `Sky 1` → `Sky 2` → `Sky 3`（ボス：Thunder Bird）
 
 ※ 各ステージのクリアが次のステージの解放条件となる。
 
 ### 6.2 ボス構成・ボス戦仕様
-* **ボス構成（初期案）**:
-  * **Forest 3：Forest Guardian** — 巨大な森のモンスター。ジャンプや攻撃の指示を学習。
-  * **Desert 3：Rock Golem** — 岩石でできた大型モンスター。チャージショットを活用。
-  * **Snow 3：Ice Machine** — 氷を操る大型ロボット。回避と攻撃を組み合わせる。
-  * **Robot 3：Mega Robot** — 大型戦闘ロボット。これまでに学んだ英語と操作の総合戦。
+* **ボス構成（全7体・個性別AI）**:
+  * **Forest 3：Forest Guardian** — 巨大な森のモンスター。弾・ジャンプ・接近の基本バランス型。
+  * **Desert 3：Rock Golem** — 岩石の大型モンスター。高速突進（`"Jump over the boss!"`）とジャンプ攻撃。
+  * **Snow 3：Ice Machine** — 氷の大型ロボット。2連弾（`"Jump over the shots!"`）と突進。
+  * **Robot 3：Mega Robot** — 大型戦闘ロボット。高低2方向弾と高速突進の総合戦。
+  * **Ocean 3：Giant Octopus** — 巨大タコ型ボス。泡の拡散弾（`"Dodge the bubbles!"`）と大ジャンプ。
+  * **Volcano 3：Fire Dragon** — 炎のドラゴン。空中ホバリングからの火の玉投下（`"Look up! Move left/right!"`）と急降下。
+  * **Sky 3：Thunder Bird** — 雷の鳥。空中移動からの落雷弾・疾風突進・空中停止（`"Jump and shoot!"`）。
 * **ボス戦・英語ミッション**:
   * ボスの攻撃パターンや状況に応じて、Buddyが英語で指示を出す。
   * プレイヤーは指示の意味を理解し、適切な操作（攻撃・回避・移動など）を行う。
@@ -313,10 +319,13 @@
 │   └── data/
 │       ├── worlds.js           # 全4ワールド・12ステージのメタデータ（解放順・ボス定義・拡張レジストリ）
 │       └── stages/
-│           ├── forest.js       # Forest World（Forest 1〜3・Forest Guardian）のマップ・敵・ミッション定義
-│           ├── desert.js       # Desert World（Desert 1〜3・Rock Golem）のマップ・敵・ミッション定義
-│           ├── snow.js         # Snow World（Snow 1〜3・Ice Machine）のマップ・敵・ミッション定義
-│           └── robot.js        # Robot World（Robot 1〜3・Mega Robot）のマップ・敵・ミッション定義
+│           ├── forest.js       # Forest World（Forest 1〜3・Forest Guardian）
+│           ├── desert.js       # Desert World（Desert 1〜3・Rock Golem）
+│           ├── snow.js         # Snow World（Snow 1〜3・Ice Machine）
+│           ├── robot.js        # Robot World（Robot 1〜3・Mega Robot）
+│           ├── ocean.js        # Ocean World（Ocean 1〜3・Giant Octopus）
+│           ├── volcano.js      # Volcano World（Volcano 1〜3・Fire Dragon）
+│           └── sky.js          # Sky World（Sky 1〜3・Thunder Bird）
 └── docs/
     └── word_buster.md          # 本仕様書
 ```

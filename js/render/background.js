@@ -7,6 +7,12 @@ export function drawWorldBackground(ctx, worldId, cameraX, stageWidth, time) {
     drawSnowBackground(ctx, cameraX, stageWidth, time);
   } else if (worldId === 'robot') {
     drawRobotBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'ocean') {
+    drawOceanBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'volcano') {
+    drawVolcanoBackground(ctx, cameraX, stageWidth, time);
+  } else if (worldId === 'sky') {
+    drawSkyBackground(ctx, cameraX, stageWidth, time);
   } else {
     drawForestBackground(ctx, cameraX, stageWidth, time);
   }
@@ -295,6 +301,173 @@ function drawRobotBackground(ctx, cameraX, stageWidth, time) {
     body: '#2a354d',
     line: '#1b2336',
     speck: '#45577a',
+  });
+}
+
+function drawOceanBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  // Underwater aqua gradient
+  const sea = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sea.addColorStop(0, '#0096c7');
+  sea.addColorStop(0.55, '#0077b6');
+  sea.addColorStop(1, '#023e8a');
+  ctx.fillStyle = sea;
+  ctx.fillRect(0, 0, w, h);
+
+  // Diagonal sunlight rays from surface
+  ctx.fillStyle = 'rgba(144, 224, 239, 0.12)';
+  for (let i = 0; i < 6; i++) {
+    const rx = ((i * 280 - cameraX * 0.15) % (w + 260) + (w + 260)) % (w + 260) - 100;
+    ctx.beginPath();
+    ctx.moveTo(rx, 0);
+    ctx.lineTo(rx + 75, 0);
+    ctx.lineTo(rx - 40, groundTop);
+    ctx.lineTo(rx - 115, groundTop);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Distant coral reefs & kelp (0.35x)
+  const reefOffset = -(cameraX * 0.35) % 260;
+  for (let i = -1; i < 8; i++) {
+    const cx = reefOffset + i * 260 + 30;
+    ctx.fillStyle = i % 2 === 0 ? '#ff6b9d' : '#ff9f43';
+    ctx.fillRect(cx + 10, groundTop - 95, 16, 95);
+    ctx.fillRect(cx - 8, groundTop - 70, 18, 12);
+    ctx.fillRect(cx + 26, groundTop - 80, 18, 12);
+    ctx.fillStyle = '#2ec4b6';
+    const sway = Math.sin(time * 2.5 + i) * 6;
+    ctx.fillRect(cx + 120 + sway, groundTop - 140, 12, 140);
+    ctx.fillRect(cx + 138 - sway, groundTop - 105, 10, 105);
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#e9c46a',
+    top2: '#d4a34f',
+    tuft: '#f4e2a8',
+    body: '#b08238',
+    line: '#876022',
+    speck: '#cf9e4c',
+  });
+
+  // Rising bubbles
+  ctx.strokeStyle = 'rgba(202, 240, 248, 0.65)';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 16; i++) {
+    const bx = ((i * 130 + Math.sin(time * 2 + i) * 14 - cameraX * 0.4) % w + w) % w;
+    const by = ((groundTop - ((time * (38 + (i % 4) * 12) + i * 85) % groundTop)) + groundTop) % groundTop;
+    ctx.beginPath();
+    ctx.arc(bx, by, 4 + (i % 3) * 2, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+function drawVolcanoBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  // Fiery volcanic sky
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#2b0b18');
+  sky.addColorStop(0.5, '#7a1c24');
+  sky.addColorStop(1, '#e85d04');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Distant volcanoes (0.2x)
+  const vOffset = -(cameraX * 0.2) % 480;
+  for (let i = -1; i < 5; i++) {
+    const vx = vOffset + i * 480;
+    ctx.fillStyle = '#3d1c22';
+    ctx.beginPath();
+    ctx.moveTo(vx, groundTop);
+    ctx.lineTo(vx + 145, groundTop - 270);
+    ctx.lineTo(vx + 205, groundTop - 270);
+    ctx.lineTo(vx + 350, groundTop);
+    ctx.closePath();
+    ctx.fill();
+
+    // Glowing crater rim
+    ctx.fillStyle = '#ff9f1c';
+    ctx.fillRect(vx + 150, groundTop - 272, 50, 10);
+  }
+
+  // Basalt rock spires (0.45x)
+  const rockOffset = -(cameraX * 0.45) % 240;
+  ctx.fillStyle = '#26141a';
+  for (let i = -1; i < 9; i++) {
+    const rx = rockOffset + i * 240 + 40;
+    ctx.fillRect(rx, groundTop - 130, 34, 130);
+    ctx.fillRect(rx + 28, groundTop - 80, 26, 80);
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#59343b',
+    top2: '#3b1f25',
+    tuft: '#ff6d00',
+    body: '#2b171b',
+    line: '#1a0c0f',
+    speck: '#ff4800',
+  });
+
+  // Rising glowing embers
+  ctx.fillStyle = 'rgba(255, 200, 60, 0.8)';
+  for (let i = 0; i < 18; i++) {
+    const ex = ((i * 110 + Math.sin(time * 3 + i) * 20 - cameraX * 0.5) % w + w) % w;
+    const ey = ((groundTop - ((time * (52 + (i % 3) * 20) + i * 67) % groundTop)) + groundTop) % groundTop;
+    ctx.fillRect(ex, ey, 4, 4);
+  }
+}
+
+function drawSkyBackground(ctx, cameraX, stageWidth, time) {
+  const w = ctx.canvas.width || CONFIG.CANVAS_WIDTH;
+  const h = ctx.canvas.height || CONFIG.CANVAS_HEIGHT;
+  const groundTop = CONFIG.GROUND_Y;
+
+  // Bright sky-high gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, groundTop);
+  sky.addColorStop(0, '#1e88e5');
+  sky.addColorStop(0.55, '#64b5f6');
+  sky.addColorStop(1, '#e3f2fd');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Soft distant rainbow arc
+  const colors = ['#ff6b6b', '#ffd166', '#45d17a', '#4cc9f0', '#9b5de5'];
+  ctx.save();
+  ctx.globalAlpha = 0.25;
+  colors.forEach((col, idx) => {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.arc(w * 0.55, groundTop + 120, 440 - idx * 12, Math.PI, 0);
+    ctx.stroke();
+  });
+  ctx.restore();
+
+  // Floating cloud banks (0.25x)
+  const cloudOffset = -(cameraX * 0.25) % 340;
+  for (let i = -1; i < 7; i++) {
+    const cx = cloudOffset + i * 340 + 40;
+    const cy = 120 + ((i * 67) % 240) + Math.sin(time * 1.5 + i) * 6;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    ctx.fillRect(cx, cy, 130, 32);
+    ctx.fillRect(cx + 22, cy - 18, 86, 22);
+    ctx.fillStyle = 'rgba(187, 222, 251, 0.8)';
+    ctx.fillRect(cx + 6, cy + 26, 118, 8);
+  }
+
+  drawTiledGround(ctx, w, h, groundTop, cameraX, stageWidth, {
+    top1: '#ffffff',
+    top2: '#d6ecff',
+    tuft: '#ffd166',
+    body: '#90caf9',
+    line: '#64b5f6',
+    speck: '#e3f2fd',
   });
 }
 

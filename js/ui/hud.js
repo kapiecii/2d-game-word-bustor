@@ -247,7 +247,7 @@ export class HudController {
       this.clearUnlockEl.textContent = `NEW STAGE UNLOCKED: ${nextStageId.toUpperCase()}!`;
       this.clearUnlockEl.classList.remove('hidden');
     } else if (!nextStageId) {
-      this.clearUnlockEl.textContent = 'ALL 4 WORLDS COMPLETE! YOU ARE A WORD BUSTER!';
+      this.clearUnlockEl.textContent = 'ALL 7 WORLDS COMPLETE! YOU ARE A WORD BUSTER!';
       this.clearUnlockEl.classList.remove('hidden');
     } else {
       this.clearUnlockEl.classList.add('hidden');

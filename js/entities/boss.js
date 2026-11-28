@@ -1,14 +1,20 @@
 import { CONFIG } from '../config.js';
 import { getBossSprite } from '../render/sprites.js';
 
-// Boss character (Phase 1: Forest Guardian)
+// Boss characters with unique attack personalities per world:
 // - Always damageable by normal & charge shots (no invulnerable weak-point phase)
-// - Low HP (12 = ~12 normal shots or 4 charge shots, ~30-60s fight)
-// - 3 simple attack patterns:
-//   1. approach (left/right movement)
-//   2. jump (jump attack)
-//   3. shoot (projectile shot)
-// - Triggers contextual English instructions via Buddy on each attack
+// - Kid-friendly HP (12–16) for ~30–60s action-packed English fights
+// - Each boss triggers clear, contextual English instructions via Buddy
+
+const BOSS_PATTERNS = {
+  forest_guardian: ['shoot', 'jump', 'approach'],
+  rock_golem: ['dash', 'jump', 'shoot'],
+  ice_machine: ['double_shot', 'dash', 'jump'],
+  mega_robot: ['spread_shot', 'dash', 'jump'],
+  giant_octopus: ['spread_shot', 'big_jump', 'approach'],
+  fire_dragon: ['hover_drop', 'shoot', 'swoop'],
+  thunder_bird: ['hover_drop', 'dash', 'hover_pause'],
+};
 
 export class Boss {
   constructor(def) {
@@ -34,12 +40,12 @@ export class Boss {
     this.hitFlash = 0;
     this.animTimer = 0;
 
-    // Simple cyclic attack AI
-    this.actionState = 'idle'; // 'idle' | 'approach' | 'jump' | 'shoot'
-    this.actionTimer = 1.8;
+    this.actionState = 'idle';
+    this.actionTimer = 1.6;
     this.patternIndex = 0;
-    this.patterns = ['shoot', 'jump', 'approach'];
-    this.hasShotInState = false;
+    this.patterns = BOSS_PATTERNS[this.id] || ['shoot', 'jump', 'approach'];
+    this.shotsFired = 0;
+    this.isFlyingBoss = this.id === 'fire_dragon' || this.id === 'thunder_bird';
   }
 
   activate(onInstruction) {
@@ -61,6 +67,8 @@ export class Boss {
     this.facing = player.x + player.w / 2 < this.x + this.w / 2 ? -1 : 1;
     this.actionTimer -= dt;
 
+    let useGravity = true;
+
     if (this.actionState === 'idle') {
       this.vx = 0;
       if (this.actionTimer <= 0) {
@@ -69,32 +77,97 @@ export class Boss {
         this.startAttack(next, player, onInstruction);
       }
     } else if (this.actionState === 'approach') {
-      this.vx = this.facing * 135;
+      this.vx = this.facing * 145;
       if (this.actionTimer <= 0) {
-        this.actionState = 'idle';
-        this.actionTimer = 1.1;
+        this.enterIdle(1.0);
       }
-    } else if (this.actionState === 'jump') {
+    } else if (this.actionState === 'dash') {
+      // Keeps locked dash direction from startAttack
+      if (this.actionTimer <= 0) {
+        this.enterIdle(1.1);
+      }
+    } else if (this.actionState === 'jump' || this.actionState === 'big_jump') {
       if (this.onGround && this.actionTimer <= 0) {
-        this.actionState = 'idle';
-        this.actionTimer = 1.1;
+        this.enterIdle(1.05);
       }
     } else if (this.actionState === 'shoot') {
       this.vx = 0;
-      if (!this.hasShotInState && this.actionTimer <= 0.75) {
-        this.hasShotInState = true;
+      if (this.shotsFired === 0 && this.actionTimer <= 0.75) {
+        this.shotsFired = 1;
         const bx = this.facing < 0 ? this.x - 10 : this.x + this.w + 4;
         const by = this.y + this.h - 24;
-        spawnEnemyBullet(bx, by, this.facing * 290, 0, true);
+        spawnEnemyBullet(bx, by, this.facing * 300, 0, true);
       }
       if (this.actionTimer <= 0) {
-        this.actionState = 'idle';
-        this.actionTimer = 1.25;
+        this.enterIdle(1.15);
+      }
+    } else if (this.actionState === 'double_shot') {
+      this.vx = 0;
+      if (this.shotsFired === 0 && this.actionTimer <= 1.05) {
+        this.shotsFired = 1;
+        const bx = this.facing < 0 ? this.x - 10 : this.x + this.w + 4;
+        spawnEnemyBullet(bx, this.y + this.h - 24, this.facing * 310, 0, true);
+      } else if (this.shotsFired === 1 && this.actionTimer <= 0.55) {
+        this.shotsFired = 2;
+        const bx = this.facing < 0 ? this.x - 10 : this.x + this.w + 4;
+        spawnEnemyBullet(bx, this.y + this.h - 24, this.facing * 310, 0, true);
+      }
+      if (this.actionTimer <= 0) {
+        this.enterIdle(1.15);
+      }
+    } else if (this.actionState === 'spread_shot') {
+      this.vx = 0;
+      if (this.shotsFired === 0 && this.actionTimer <= 0.8) {
+        this.shotsFired = 1;
+        const bx = this.facing < 0 ? this.x - 10 : this.x + this.w + 4;
+        const by = this.y + this.h - 32;
+        spawnEnemyBullet(bx, by, this.facing * 290, 0, true);
+        spawnEnemyBullet(bx, by - 12, this.facing * 260, -110, true);
+      }
+      if (this.actionTimer <= 0) {
+        this.enterIdle(1.2);
+      }
+    } else if (this.actionState === 'hover_drop') {
+      useGravity = false;
+      const targetY = CONFIG.GROUND_Y - 235;
+      this.y += (targetY - this.y) * Math.min(1, dt * 5);
+      this.vy = 0;
+      const targetX = player.x;
+      this.vx = Math.sign(targetX - this.x) * 190;
+
+      if (this.shotsFired === 0 && this.actionTimer <= 1.2) {
+        this.shotsFired = 1;
+        spawnEnemyBullet(this.x + this.w / 2, this.y + this.h, 0, 290, true);
+      } else if (this.shotsFired === 1 && this.actionTimer <= 0.55) {
+        this.shotsFired = 2;
+        spawnEnemyBullet(this.x + this.w / 2, this.y + this.h, 0, 290, true);
+      }
+      if (this.actionTimer <= 0) {
+        this.enterIdle(1.1);
+      }
+    } else if (this.actionState === 'hover_pause') {
+      useGravity = false;
+      const targetY = CONFIG.GROUND_Y - 150;
+      this.y += (targetY - this.y) * Math.min(1, dt * 5);
+      this.vx = 0;
+      this.vy = 0;
+      if (this.actionTimer <= 0) {
+        this.enterIdle(0.8);
+      }
+    } else if (this.actionState === 'swoop') {
+      useGravity = false;
+      const swoopY = CONFIG.GROUND_Y - 96;
+      this.y += (swoopY - this.y) * Math.min(1, dt * 6);
+      this.vy = 0;
+      if (this.actionTimer <= 0) {
+        this.enterIdle(1.1);
       }
     }
 
     // Physics
-    this.vy = Math.min(CONFIG.MAX_FALL_SPEED, this.vy + CONFIG.GRAVITY * dt);
+    if (useGravity) {
+      this.vy = Math.min(CONFIG.MAX_FALL_SPEED, this.vy + CONFIG.GRAVITY * dt);
+    }
     this.x += this.vx * dt;
     this.y += this.vy * dt;
 
@@ -115,26 +188,72 @@ export class Boss {
     }
   }
 
+  enterIdle(duration) {
+    this.actionState = 'idle';
+    this.actionTimer = duration;
+    this.vx = 0;
+  }
+
   startAttack(type, player, onInstruction) {
     this.actionState = type;
+    this.shotsFired = 0;
 
     if (type === 'shoot') {
       this.actionTimer = 1.4;
-      this.hasShotInState = false;
+      const fireWord = this.id === 'fire_dragon' ? 'Jump over the fire!' : 'Jump over the attack!';
+      const fireJp = this.id === 'fire_dragon' ? '炎を飛びこえて！' : '攻撃を飛び越えて！';
+      onInstruction({ text: fireWord, jp: fireJp });
+    } else if (type === 'double_shot') {
+      this.actionTimer = 1.65;
       onInstruction({
-        text: 'Jump over the attack!',
-        jp: '攻撃を飛び越えて！',
+        text: 'Jump over the shots!',
+        jp: '2発の弾を飛びこえて！',
       });
-    } else if (type === 'jump') {
+    } else if (type === 'spread_shot') {
+      this.actionTimer = 1.45;
+      const isOcto = this.id === 'giant_octopus';
+      onInstruction({
+        text: isOcto ? 'Dodge the bubbles!' : 'Watch out! Jump!',
+        jp: isOcto ? '泡の攻撃をよけて！' : '気をつけて！ジャンプ！',
+      });
+    } else if (type === 'dash') {
+      this.actionTimer = 1.25;
+      this.vx = this.facing * 290;
+      onInstruction({
+        text: 'Jump over the boss!',
+        jp: '突進してくるボスを飛びこえて！',
+      });
+    } else if (type === 'swoop') {
+      this.actionTimer = 1.25;
+      this.vx = this.facing * 265;
+      onInstruction({
+        text: 'Watch out! Move away!',
+        jp: '気をつけて！離れよう！',
+      });
+    } else if (type === 'jump' || type === 'big_jump') {
       this.actionTimer = 1.2;
-      this.vy = -560;
-      this.vx = this.facing * 155;
+      this.vy = type === 'big_jump' ? -670 : -560;
+      this.vx = this.facing * 175;
       this.onGround = false;
       const moveAwayText = player.x < this.x ? 'Move left!' : 'Move right!';
       const moveAwayJp = player.x < this.x ? '左に移動して！' : '右に移動して！';
       onInstruction({
         text: `Watch out! ${moveAwayText}`,
         jp: `気をつけて！${moveAwayJp}`,
+      });
+    } else if (type === 'hover_drop') {
+      this.actionTimer = 1.9;
+      const moveAwayText = player.x < this.x ? 'Move left!' : 'Move right!';
+      const moveAwayJp = player.x < this.x ? '左に移動して！' : '右に移動して！';
+      onInstruction({
+        text: `Look up! ${moveAwayText}`,
+        jp: `上を見て！${moveAwayJp}`,
+      });
+    } else if (type === 'hover_pause') {
+      this.actionTimer = 1.7;
+      onInstruction({
+        text: 'Jump and shoot!',
+        jp: 'ジャンプして撃とう！',
       });
     } else if (type === 'approach') {
       this.actionTimer = 1.35;
@@ -173,7 +292,7 @@ export class Boss {
 
     // Boss HP bar above boss
     if (this.active) {
-      const barW = 110;
+      const barW = 116;
       const barH = 10;
       const bx = sx + Math.floor((this.w - barW) / 2);
       const by = sy - 22;

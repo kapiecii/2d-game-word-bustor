@@ -534,7 +534,142 @@ const BOSS_MEGA_1 = [
   '..DDDDD..DDDDD..',
 ];
 
+const BOSS_OCTOPUS_0 = [
+  '....PPPPPPPP....',
+  '..PPHHHHHHHHPP..',
+  '.PPHPPPPPPPPHPP.',
+  '.PPPPPPPPPPPPPP.',
+  '.PPPWWPPPPWWPPP.',
+  '.PPWYEPPPWYEPPP.',
+  '.PPPWWPPPPWWPPP.',
+  '..PPPPDDDDPPPP..',
+  '..PPPPPDDPPPPP..',
+  '.PP.PPP..PPP.PP.',
+  'PP..PP....PP..PP',
+  'P..PP..PP..PP..P',
+  '...P...PP...P...',
+  '.......PP.......',
+];
+
+const BOSS_OCTOPUS_1 = [
+  '....PPPPPPPP....',
+  '..PPHHHHHHHHPP..',
+  '.PPHPPPPPPPPHPP.',
+  '.PPPPPPPPPPPPPP.',
+  '.PPPWWPPPPWWPPP.',
+  '.PPWYEPPPWYEPPP.',
+  '.PPPWWPPPPWWPPP.',
+  '..PPPPDDDDPPPP..',
+  '.PPPPPPDDPPPPPP.',
+  'PP..PP.PP.PP..PP',
+  '.P..PP.PP.PP..P.',
+  '....P..PP..P....',
+  '..PP........PP..',
+  '..P..........P..',
+];
+
+const BOSS_DRAGON_0 = [
+  'YY............YY',
+  'OYY..RRRRRR..YYO',
+  'OOYRRRRRRRRRRYOO',
+  '.OORRRYYYYRRROO.',
+  '..ORRYERRRYERO..',
+  '..ORRRRRRRRRRO..',
+  '...ORWWWWWWRO...',
+  'RRRRRROYYORRRRRR',
+  'RRROORROORROORRR',
+  'OO..ORRRRRRO..OO',
+  '....ORROORRO....',
+  '...ORRO..ORRO...',
+  '...DDDO..ODDD...',
+  '................',
+];
+
+const BOSS_DRAGON_1 = [
+  '....RRRRRRRR....',
+  '...RRRRRRRRRR...',
+  '..ORRRYYYYRRRO..',
+  '..ORRYERRRYERO..',
+  '..ORRRRRRRRRRO..',
+  '...ORWWWWWWRO...',
+  'OO..RROYYORR..OO',
+  'RRRRRRROORRRRRRR',
+  'RRROORRRRRROORRR',
+  'OO..ORRRRRRO..OO',
+  '...ORRO..ORRO...',
+  '..ORRO....ORRO..',
+  '..DDDO....ODDD..',
+  '................',
+];
+
+const BOSS_BIRD_0 = [
+  'CC....YYYY....CC',
+  'CCC..YHHHHY..CCC',
+  'CCCCYYYYYYYYCCCC',
+  '.CCCYYEWWEYYCCC.',
+  '..CCYYOOOOYYCC..',
+  '...CYYYOOYYYC...',
+  '....YYYYYYYY....',
+  '...CYYYYYYYYC...',
+  '..CCYYYYYYYYCC..',
+  '.....YY..YY.....',
+  '....OOO..OOO....',
+  '....O.O..O.O....',
+  '................',
+  '................',
+];
+
+const BOSS_BIRD_1 = [
+  '......YYYY......',
+  '.....YHHHHY.....',
+  '....YYYYYYYY....',
+  '...CYYEWWEYYC...',
+  '..CCYYOOOOYYCC..',
+  '.CCCYYYOOYYYCCC.',
+  'CCCCYYYYYYYYCCCC',
+  'CCC.YYYYYYYY.CCC',
+  'CC...YYYYYY...CC',
+  '.....YY..YY.....',
+  '....OOO..OOO....',
+  '................',
+  '................',
+  '................',
+];
+
 export function getBossSprite(bossId, frame = 0, flipX = false, scale = 6) {
+  if (bossId === 'giant_octopus') {
+    const palette = {
+      P: '#9b5de5',
+      H: '#d0a2ff',
+      D: '#5a189a',
+      W: '#ffffff',
+      Y: '#ffd166',
+      E: '#1a1f36',
+    };
+    return getSprite(`boss_octopus_${frame % 2}`, frame % 2 === 0 ? BOSS_OCTOPUS_0 : BOSS_OCTOPUS_1, palette, scale, flipX);
+  }
+  if (bossId === 'fire_dragon') {
+    const palette = {
+      R: '#e63946',
+      O: '#ff6d00',
+      Y: '#ffd166',
+      E: '#1a1f36',
+      W: '#ffffff',
+      D: '#7a1220',
+    };
+    return getSprite(`boss_dragon_${frame % 2}`, frame % 2 === 0 ? BOSS_DRAGON_0 : BOSS_DRAGON_1, palette, scale, flipX);
+  }
+  if (bossId === 'thunder_bird') {
+    const palette = {
+      Y: '#ffd24c',
+      H: '#fff3a8',
+      C: '#4cc9f0',
+      O: '#ff8c2b',
+      W: '#ffffff',
+      E: '#1a1f36',
+    };
+    return getSprite(`boss_bird_${frame % 2}`, frame % 2 === 0 ? BOSS_BIRD_0 : BOSS_BIRD_1, palette, scale, flipX);
+  }
   if (bossId === 'rock_golem') {
     const palette = {
       G: '#8d99ae',
